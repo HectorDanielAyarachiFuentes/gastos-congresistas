@@ -406,7 +406,9 @@ const DebtChart = forwardRef(({ legislators, globalMilestones, ipc, mep, onRemov
                 <div className="font-bold text-sm flex items-center gap-1">
                   {l.nombre}
                   {l.familiares && l.familiares.length > 0 && (
-                    <Users size={13} className="text-blue-400 shrink-0" title="Tiene datos de familiares" />
+                    <span title="Tiene datos de familiares" className="flex">
+                      <Users size={13} className="text-blue-400 shrink-0" />
+                    </span>
                   )}
                 </div>
                 <div className="flex gap-1 mt-1 flex-wrap">

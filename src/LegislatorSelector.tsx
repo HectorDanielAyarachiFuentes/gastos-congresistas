@@ -156,7 +156,10 @@ export default ({ legisladores, onSelect, selectedIds = [], selectedColors = {} 
           )}
           <div className="grid grid-cols-3 gap-2">
             <div>
-              <label htmlFor="credit" className="block text-gray-600 text-xs font-semibold mb-1 flex gap-1"><Home size={14} className="text-green-600" />Crédito*</label>
+              <label htmlFor="credit" className="block text-gray-600 text-xs font-semibold mb-1 flex gap-1">
+                <span title="Posible crédito" className="flex"><Home size={14} className="text-green-600" /></span>
+                Crédito*
+              </label>
               <select id="credit" value={creditFilter} onChange={e => setCreditFilter(e.target.value)} className="w-full p-2 border rounded bg-white">
                 <option value="todos">Todos</option>
                 <option value="si">Sí</option>
@@ -164,7 +167,10 @@ export default ({ legisladores, onSelect, selectedIds = [], selectedColors = {} 
               </select>
             </div>
             <div>
-              <label htmlFor="levelChange" className="block text-gray-600 text-xs font-semibold mb-1 flex gap-1"><AlertCircle size={14} className="text-orange-500" />Nivel*</label>
+              <label htmlFor="levelChange" className="block text-gray-600 text-xs font-semibold mb-1 flex gap-1">
+                <span title="Cambio de nivel" className="flex"><AlertCircle size={14} className="text-orange-500" /></span>
+                Nivel*
+              </label>
               <select id="levelChange" value={levelChangeFilter} onChange={e => setLevelChangeFilter(e.target.value)} className="w-full p-2 border rounded bg-white">
                 <option value="todos">Todos</option>
                 <option value="si">Sí</option>
@@ -172,7 +178,10 @@ export default ({ legisladores, onSelect, selectedIds = [], selectedColors = {} 
               </select>
             </div>
             <div>
-              <label htmlFor="familiares" className="block text-gray-600 text-xs font-semibold mb-1 flex gap-1"><Users size={14} className="text-blue-400" />Familiares</label>
+              <label htmlFor="familiares" className="block text-gray-600 text-xs font-semibold mb-1 flex gap-1">
+                <span title="Tiene familiares" className="flex"><Users size={14} className="text-blue-400" /></span>
+                Familiares
+              </label>
               <select id="familiares" value={familiaresFilter} onChange={e => setFamiliaresFilter(e.target.value)} className="w-full p-2 border rounded bg-white">
                 <option value="todos">Todos</option>
                 <option value="si">Sí</option>

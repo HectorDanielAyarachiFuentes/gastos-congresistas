@@ -140,6 +140,7 @@ export default function Dashboard() {
             setMobileView(v => v === 'list' ? 'chart' : 'list');
           }}
           className="bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-xl flex items-center justify-center transition-colors"
+          title={mobileView === 'list' ? 'Ver gráfico' : 'Ver lista'}
         >
           {mobileView === 'list' ? <BarChart3 size={24} /> : <List size={24} />}
         </button>
@@ -195,7 +196,7 @@ export default function Dashboard() {
       {showHelp && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setShowHelp(false)}>
           <div className="bg-white p-6 rounded-lg shadow-xl max-w-sm relative" onClick={e => e.stopPropagation()}>
-            <button onClick={() => setShowHelp(false)} className="absolute top-2 right-2 text-gray-400 hover:text-gray-600 cursor-pointer">
+            <button onClick={() => setShowHelp(false)} className="absolute top-2 right-2 text-gray-400 hover:text-gray-600 cursor-pointer" title="Cerrar">
               <X size={20} />
             </button>
             <h3 className="font-bold text-lg mb-2">Información</h3>
