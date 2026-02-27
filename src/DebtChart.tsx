@@ -24,6 +24,28 @@ interface Bank {
     entidad: string;
 }
 
+// Separator used in segment keys (unlikely to appear in data)
+const SEP = '|||';
+
+interface SegmentInfo {
+  cuit: string;
+  entidad: string;
+  isFamiliar: boolean;
+  parentesco?: string;
+  totalMonto: number;
+}
+
+function tintColor(hex: string, amount: number): string {
+  // amount 0 = original color, 1 = white
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  const nr = Math.round(r + (255 - r) * amount);
+  const ng = Math.round(g + (255 - g) * amount);
+  const nb = Math.round(b + (255 - b) * amount);
+  return `#${nr.toString(16).padStart(2, '0')}${ng.toString(16).padStart(2, '0')}${nb.toString(16).padStart(2, '0')}`;
+}
+
 const teniaCargo = (legislator: Legislator, cargo: string | undefined, fecha: string): boolean => {
   return (legislator.periodos || []).filter(p => p.cargo.toLowerCase() === (cargo || '').toLowerCase() && fecha > p.inicio && fecha < p.fin).length > 0
 }
@@ -84,7 +106,69 @@ const DebtChart = forwardRef(({ legislators, globalMilestones, ipc, mep, onRemov
     return r;
   }, [ipc]);
 
-  // 2. Procesar Datos de Deuda (Agrupar por mes)
+  // 2a. Calcular segmentos únicos (cuit × deudor × entidad) con total acumulado
+  const barSegments = useMemo(() => {
+    const map = new Map<string, SegmentInfo>();
+
+    legislators.forEach(l => {
+      l.historial.forEach(r => {
+        const key = `${l.cuit}${SEP}propio${SEP}${r.entidad}`;
+        const existing = map.get(key);
+        if (existing) existing.totalMonto += r.monto;
+        else map.set(key, { cuit: l.cuit, entidad: r.entidad, isFamiliar: false, totalMonto: r.monto });
+      });
+
+      if (includeFamiliares && l.familiares) {
+        l.familiares.forEach(familiar => {
+          familiar.historial.forEach(r => {
+            const key = `${l.cuit}${SEP}${familiar.parentesco}${SEP}${r.entidad}`;
+            const existing = map.get(key);
+            if (existing) existing.totalMonto += r.monto;
+            else map.set(key, { cuit: l.cuit, entidad: r.entidad, isFamiliar: true, parentesco: familiar.parentesco, totalMonto: r.monto });
+          });
+        });
+      }
+    });
+
+    return map;
+  }, [legislators, includeFamiliares]);
+
+  // 2b. Asignar colores a cada segmento (tintes del color base del político)
+  const segmentColors = useMemo(() => {
+    const colorMap = new Map<string, string>();
+
+    legislators.forEach((l, idx) => {
+      const baseColor = l.color || COLORS[idx % COLORS.length];
+
+      const propioKeys = [...barSegments.entries()]
+        .filter(([, v]) => v.cuit === l.cuit && !v.isFamiliar)
+        .sort((a, b) => b[1].totalMonto - a[1].totalMonto)
+        .map(([key]) => key);
+
+      const familiaresKeys = [...barSegments.entries()]
+        .filter(([, v]) => v.cuit === l.cuit && v.isFamiliar)
+        .sort((a, b) => b[1].totalMonto - a[1].totalMonto)
+        .map(([key]) => key);
+
+      // Propio: base color → tinte 55% (de oscuro a claro según deuda)
+      propioKeys.forEach((key, i) => {
+        const tint = propioKeys.length <= 1 ? 0 : (i / (propioKeys.length - 1)) * 0.55;
+        colorMap.set(key, tintColor(baseColor, tint));
+      });
+
+      // Familiares: tintes 65%–85% (zona visualmente diferenciada)
+      familiaresKeys.forEach((key, i) => {
+        const tint = familiaresKeys.length <= 1
+          ? 0.65
+          : 0.65 + (i / (familiaresKeys.length - 1)) * 0.2;
+        colorMap.set(key, tintColor(baseColor, tint));
+      });
+    });
+
+    return colorMap;
+  }, [legislators, barSegments]);
+
+  // 2c. Procesar Datos de Deuda (Agrupar por mes)
   const chartData = useMemo(() => {
     const grouped: { [key: string]: any } = {};
 
@@ -107,7 +191,6 @@ const DebtChart = forwardRef(({ legislators, globalMilestones, ipc, mep, onRemov
     const ensureEntry = (fecha: string, cuit: string) => {
       if (!grouped[fecha]) grouped[fecha] = { date: fecha, banks: {} };
       if (!grouped[fecha].banks[cuit]) grouped[fecha].banks[cuit] = { propio: [], familiares: {} };
-      if (!grouped[fecha][cuit]) grouped[fecha][cuit] = 0;
     };
 
     legislators.forEach(l => {
@@ -115,7 +198,8 @@ const DebtChart = forwardRef(({ legislators, globalMilestones, ipc, mep, onRemov
       l.historial.forEach(r => {
         ensureEntry(r.fecha, l.cuit);
         const monto = convertMonto(r.monto, r.fecha);
-        grouped[r.fecha][l.cuit] += monto;
+        const key = `${l.cuit}${SEP}propio${SEP}${r.entidad}`;
+        grouped[r.fecha][key] = (grouped[r.fecha][key] || 0) + monto;
         grouped[r.fecha].banks[l.cuit].propio.push({ ...r, monto });
       });
 
@@ -125,7 +209,8 @@ const DebtChart = forwardRef(({ legislators, globalMilestones, ipc, mep, onRemov
           familiar.historial.forEach(r => {
             ensureEntry(r.fecha, l.cuit);
             const monto = convertMonto(r.monto, r.fecha);
-            grouped[r.fecha][l.cuit] += monto;
+            const key = `${l.cuit}${SEP}${familiar.parentesco}${SEP}${r.entidad}`;
+            grouped[r.fecha][key] = (grouped[r.fecha][key] || 0) + monto;
             const fams = grouped[r.fecha].banks[l.cuit].familiares;
             if (!fams[familiar.parentesco]) fams[familiar.parentesco] = [];
             fams[familiar.parentesco].push({ ...r, monto });
@@ -195,9 +280,10 @@ const DebtChart = forwardRef(({ legislators, globalMilestones, ipc, mep, onRemov
         <p className="font-bold mb-1">{label}</p>
 
         {legislators.map((l, idx) => {
-          const item = payload.find((p: any) => p.dataKey === l.cuit);
-          if (!item) return null;
-          const banks = item.payload.banks[l.cuit] || { propio: [], familiares: {} };
+          const lPayloads = payload.filter((p: any) => p.dataKey.startsWith(l.cuit + SEP));
+          if (lPayloads.length === 0) return null;
+          const total = lPayloads.reduce((sum: number, p: any) => sum + (p.value || 0), 0);
+          const banks = lPayloads[0].payload.banks[l.cuit] || { propio: [], familiares: {} };
 
           const personalMilestones = (l.hitos_personales || []).filter(h => h.fecha === label);
           const relevantGlobalMilestones = globalMilestones.filter(m =>
@@ -212,7 +298,7 @@ const DebtChart = forwardRef(({ legislators, globalMilestones, ipc, mep, onRemov
           return (
             <div key={l.cuit} className="mb-2 border-b pb-1 last:border-0">
               <p className="font-bold text-sm" style={{ color: l.color || COLORS[idx % COLORS.length] }}>
-                {l.nombre}: {formatMoney(item.value)}
+                {l.nombre}: {formatMoney(total)}
               </p>
               {milestones.map((m, i) => (
                 <div key={i} className="mb-1 p-1 bg-yellow-50 border border-yellow-200 rounded text-yellow-800 font-semibold flex items-center gap-1">
@@ -225,10 +311,16 @@ const DebtChart = forwardRef(({ legislators, globalMilestones, ipc, mep, onRemov
                   {includeFamiliares && familiarEntries.length > 0 && (
                     <p className="font-semibold opacity-60 uppercase tracking-wide" style={{ fontSize: 9 }}>Titular</p>
                   )}
-                  <div className="opacity-70 pl-2">
-                    {banks.propio.map((b: Bank, i: number) => (
-                      <div key={i}>{b.entidad}: {formatMoney(b.monto)}</div>
-                    ))}
+                  <div className="pl-1">
+                    {banks.propio.map((b: Bank, i: number) => {
+                      const color = segmentColors.get(`${l.cuit}${SEP}propio${SEP}${b.entidad}`);
+                      return (
+                        <div key={i} className="flex items-center gap-1 opacity-80">
+                          <span className="shrink-0 w-2 h-2 rounded-full inline-block" style={{ backgroundColor: color }} />
+                          {b.entidad}: {formatMoney(b.monto)}
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               )}
@@ -238,10 +330,16 @@ const DebtChart = forwardRef(({ legislators, globalMilestones, ipc, mep, onRemov
                   <p className="font-semibold opacity-60 uppercase tracking-wide flex items-center gap-1" style={{ fontSize: 9 }}>
                     <Users size={9} /> {parentesco}
                   </p>
-                  <div className="opacity-70 pl-2">
-                    {records.map((b: Bank, i: number) => (
-                      <div key={i}>{b.entidad}: {formatMoney(b.monto)}</div>
-                    ))}
+                  <div className="pl-1">
+                    {records.map((b: Bank, i: number) => {
+                      const color = segmentColors.get(`${l.cuit}${SEP}${parentesco}${SEP}${b.entidad}`);
+                      return (
+                        <div key={i} className="flex items-center gap-1 opacity-80">
+                          <span className="shrink-0 w-2 h-2 rounded-full inline-block" style={{ backgroundColor: color }} />
+                          {b.entidad}: {formatMoney(b.monto)}
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               ))}
@@ -362,9 +460,25 @@ const DebtChart = forwardRef(({ legislators, globalMilestones, ipc, mep, onRemov
               />
             ))}
 
-            {legislators.map((l, idx) => (
-              <Bar key={l.cuit} dataKey={l.cuit} fill={l.color || COLORS[idx % COLORS.length]} />
-            ))}
+            {legislators.flatMap((l, idx) => {
+              const propioKeys = [...barSegments.entries()]
+                .filter(([, v]) => v.cuit === l.cuit && !v.isFamiliar)
+                .sort((a, b) => b[1].totalMonto - a[1].totalMonto)
+                .map(([key]) => key);
+              const familiaresKeys = [...barSegments.entries()]
+                .filter(([, v]) => v.cuit === l.cuit && v.isFamiliar)
+                .sort((a, b) => b[1].totalMonto - a[1].totalMonto)
+                .map(([key]) => key);
+              return [...propioKeys, ...familiaresKeys].map(key => (
+                <Bar
+                  key={key}
+                  dataKey={key}
+                  stackId={l.cuit}
+                  fill={segmentColors.get(key) || l.color || COLORS[idx % COLORS.length]}
+                  isAnimationActive={false}
+                />
+              ));
+            })}
             <Brush dataKey="date" height={25} stroke={GRAY} tickFormatter={() => ''} />
           </BarChart>
         </ResponsiveContainer>
