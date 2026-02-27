@@ -14,7 +14,13 @@ export interface Milestone {
   tipo?: 'global' | 'personal' | 'voto' | 'politico' | 'economico' | 'senadores' | 'diputados'; // Opcional, para lógica de filtrado visual
 }
 
-// 3. El Legislador (La entidad principal)
+// 3. Familiar de un legislador
+export interface Familiar {
+  parentesco: string; // Ej: "CONYUGE / CONVIVIENTE", "HIJO/A"
+  historial: DebtRecord[];
+}
+
+// 4. El Legislador (La entidad principal)
 export interface Legislator {
   cuit: string;     // Identificador único (Ej: "20326896684")
   nombre: string;   // Nombre completo
@@ -28,10 +34,11 @@ export interface Legislator {
   periodos?: { cargo: 'Senador' | 'Diputado', inicio: string, fin: string }[];  // Solo legisladores
   posible_crédito: boolean;
   cambios_nivel: boolean;
+  familiares?: Familiar[];
   color?: string;
 }
 
-// 4. Estructura Raíz del JSON (Dashboard completo)
+// 5. Estructura Raíz del JSON (Dashboard completo)
 export interface DashboardData {
   meta: {
     hitos_globales: Milestone[]; // Hitos que aplican a todos

@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from 'react';
-import { Home, AlertCircle, X } from 'lucide-react';
+import { Home, AlertCircle, X, Users } from 'lucide-react';
 
 import type { Legislator } from './types';
 import { COLORS } from './Colors';
@@ -30,6 +30,7 @@ export default ({ legisladores, onSelect, selectedIds = [], selectedColors = {} 
   const [unitFilter, setUnitFilter] = useState("todas");
   const [creditFilter, setCreditFilter] = useState("todos");
   const [levelChangeFilter, setLevelChangeFilter] = useState("todos");
+  const [familiaresFilter, setFamiliaresFilter] = useState("todos");
   const [sortOrder, setSortOrder] = useState("nombre_asc");
 
   const provinces = useMemo(() => [...new Set(legisladores.filter(l => l.distrito !== undefined).map(l => l.distrito).filter(p => (p || '').trim() !== ''))].sort(), [legisladores]);
@@ -75,8 +76,10 @@ export default ({ legisladores, onSelect, selectedIds = [], selectedColors = {} 
 
         const creditMatch = creditFilter === 'todos' || (creditFilter === 'si' ? l.posible_crédito : !l.posible_crédito);
         const levelChangeMatch = levelChangeFilter === 'todos' || (levelChangeFilter === 'si' ? l.cambios_nivel : !l.cambios_nivel);
+        const hasFamiliares = l.familiares && l.familiares.length > 0;
+        const familiaresMatch = familiaresFilter === 'todos' || (familiaresFilter === 'si' ? hasFamiliares : !hasFamiliares);
 
-        return selectedIds.includes(l.cuit) || (searchMatch && positionMatch && provinceMatch && partyMatch && unitMatch && creditMatch && levelChangeMatch);
+        return selectedIds.includes(l.cuit) || (searchMatch && positionMatch && provinceMatch && partyMatch && unitMatch && creditMatch && levelChangeMatch && familiaresMatch);
       })
       .sort((a, b) => {
         const aSelected = selectedIds.includes(a.cuit);
@@ -94,7 +97,7 @@ export default ({ legisladores, onSelect, selectedIds = [], selectedColors = {} 
 
         return 0;
       });
-  }, [legisladores, debouncedSearchTerm, positionFilter, provinceFilter, partyFilter, unitFilter, creditFilter, levelChangeFilter, selectedIds, sortOrder, debtStats]);
+  }, [legisladores, debouncedSearchTerm, positionFilter, provinceFilter, partyFilter, unitFilter, creditFilter, levelChangeFilter, familiaresFilter, selectedIds, sortOrder, debtStats]);
 
   return (
     <div className="w-full md:w-80 h-full flex flex-col border-r border-gray-200 bg-white">
@@ -151,9 +154,9 @@ export default ({ legisladores, onSelect, selectedIds = [], selectedColors = {} 
               </select>
             </div>
           )}
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-3 gap-2">
             <div>
-              <label htmlFor="credit" className="block text-gray-600 text-xs font-semibold mb-1 flex gap-1"><Home size={14} className="text-green-600" />Posible Crédito*</label>
+              <label htmlFor="credit" className="block text-gray-600 text-xs font-semibold mb-1 flex gap-1"><Home size={14} className="text-green-600" />Crédito*</label>
               <select id="credit" value={creditFilter} onChange={e => setCreditFilter(e.target.value)} className="w-full p-2 border rounded bg-white">
                 <option value="todos">Todos</option>
                 <option value="si">Sí</option>
@@ -161,8 +164,16 @@ export default ({ legisladores, onSelect, selectedIds = [], selectedColors = {} 
               </select>
             </div>
             <div>
-              <label htmlFor="levelChange" className="block text-gray-600 text-xs font-semibold mb-1 flex gap-1"><AlertCircle size={14} className="text-orange-500" />Cambios Nivel*</label>
+              <label htmlFor="levelChange" className="block text-gray-600 text-xs font-semibold mb-1 flex gap-1"><AlertCircle size={14} className="text-orange-500" />Nivel*</label>
               <select id="levelChange" value={levelChangeFilter} onChange={e => setLevelChangeFilter(e.target.value)} className="w-full p-2 border rounded bg-white">
+                <option value="todos">Todos</option>
+                <option value="si">Sí</option>
+                <option value="no">No</option>
+              </select>
+            </div>
+            <div>
+              <label htmlFor="familiares" className="block text-gray-600 text-xs font-semibold mb-1 flex gap-1"><Users size={14} className="text-blue-400" />Familiares</label>
+              <select id="familiares" value={familiaresFilter} onChange={e => setFamiliaresFilter(e.target.value)} className="w-full p-2 border rounded bg-white">
                 <option value="todos">Todos</option>
                 <option value="si">Sí</option>
                 <option value="no">No</option>
@@ -181,6 +192,7 @@ export default ({ legisladores, onSelect, selectedIds = [], selectedColors = {} 
               setUnitFilter("todas");
               setCreditFilter("todos");
               setLevelChangeFilter("todos");
+              setFamiliaresFilter("todos");
             }}
             className="w-full py-2 bg-gray-100 hover:bg-gray-200 text-gray-600 text-xs font-semibold rounded transition-colors"
           >
@@ -219,6 +231,11 @@ export default ({ legisladores, onSelect, selectedIds = [], selectedColors = {} 
                     {l.cambios_nivel && (
                       <div title="Tiene un cambio de nivel en su deuda. Este indicador es una heurística inferida a partir de los montos." className="shrink-0 flex">
                         <AlertCircle size={14} className="text-orange-500" />
+                      </div>
+                    )}
+                    {l.familiares && l.familiares.length > 0 && (
+                      <div title="Tiene datos de familiares en el BCRA." className="shrink-0 flex">
+                        <Users size={14} className="text-blue-400" />
                       </div>
                     )}
                   </div>

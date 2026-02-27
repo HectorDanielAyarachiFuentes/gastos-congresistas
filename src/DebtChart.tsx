@@ -3,7 +3,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 
 // Importa tu JSON generado por Python
 import type { Legislator, Milestone, CurrencyMode } from './types';
-import { Flag, HelpCircle, Share2 } from 'lucide-react';
+import { Flag, HelpCircle, Share2, Users } from 'lucide-react';
 import { COLORS } from './Colors';
 
 interface DebtChartProps {
@@ -32,7 +32,9 @@ const GRAY = '#9ca3af';
 
 const DebtChart = forwardRef(({ legislators, globalMilestones, ipc, mep, onRemove, isMobile, copied, onShare, onShowHelp }: DebtChartProps, ref) => {
   const [currencyMode, setCurrencyMode] = useState<CurrencyMode>('nominal');
+  const [includeFamiliares, setIncludeFamiliares] = useState(false);
   const chartContainerRef = useRef<HTMLDivElement>(null);
+
 
   useImperativeHandle(ref, () => ({
     getChartElement: () => chartContainerRef.current,
@@ -90,38 +92,50 @@ const DebtChart = forwardRef(({ legislators, globalMilestones, ipc, mep, onRemov
     if (currencyMode === 'real' && ipc) {
       if (ipcDates.length > 0) latestIPC = ipc[ipcDates[ipcDates.length - 1]];
     }
-    
+
+    const convertMonto = (monto: number, fecha: string) => {
+      if (currencyMode === 'real' && ipc && latestIPC > 0) {
+        const val = ipc[fecha];
+        if (val) return (monto * latestIPC) / val;
+      } else if (currencyMode === 'usd' && mep) {
+        const val = mep[fecha];
+        return (val && val > 0) ? (monto * 1000) / val : 0;
+      }
+      return monto;
+    };
+
+    const ensureEntry = (fecha: string, cuit: string) => {
+      if (!grouped[fecha]) grouped[fecha] = { date: fecha, banks: {} };
+      if (!grouped[fecha].banks[cuit]) grouped[fecha].banks[cuit] = { propio: [], familiares: {} };
+      if (!grouped[fecha][cuit]) grouped[fecha][cuit] = 0;
+    };
+
     legislators.forEach(l => {
+      // Historial propio
       l.historial.forEach(r => {
-        if (!grouped[r.fecha]) grouped[r.fecha] = { date: r.fecha, banks: {} };
-        
-        let monto = r.monto;
-        if (currencyMode === 'real' && ipc && latestIPC > 0) {
-          const val = ipc[r.fecha];
-          if (val) {
-            monto = (monto * latestIPC) / val;
-          }
-        } else if (currencyMode === 'usd' && mep) {
-          const val = mep[r.fecha];
-          if (val && val > 0) {
-            monto = (monto * 1000) / val;
-          } else {
-            monto = 0;
-          }
-        }
-
-        // Sumar al total del legislador en esa fecha
-        if (!grouped[r.fecha][l.cuit]) grouped[r.fecha][l.cuit] = 0;
+        ensureEntry(r.fecha, l.cuit);
+        const monto = convertMonto(r.monto, r.fecha);
         grouped[r.fecha][l.cuit] += monto;
-
-        // Guardar detalle de bancos
-        if (!grouped[r.fecha].banks[l.cuit]) grouped[r.fecha].banks[l.cuit] = [];
-        grouped[r.fecha].banks[l.cuit].push({ ...r, monto });
+        grouped[r.fecha].banks[l.cuit].propio.push({ ...r, monto });
       });
+
+      // Familiares
+      if (includeFamiliares && l.familiares) {
+        l.familiares.forEach(familiar => {
+          familiar.historial.forEach(r => {
+            ensureEntry(r.fecha, l.cuit);
+            const monto = convertMonto(r.monto, r.fecha);
+            grouped[r.fecha][l.cuit] += monto;
+            const fams = grouped[r.fecha].banks[l.cuit].familiares;
+            if (!fams[familiar.parentesco]) fams[familiar.parentesco] = [];
+            fams[familiar.parentesco].push({ ...r, monto });
+          });
+        });
+      }
     });
 
     return Object.values(grouped).sort((a, b) => a.date.localeCompare(b.date));
-  }, [legislators, currencyMode, ipc, mep, ipcDates]);
+  }, [legislators, currencyMode, ipc, mep, ipcDates, includeFamiliares]);
 
 
   const xAxisInterval = useMemo(() => {
@@ -175,24 +189,25 @@ const DebtChart = forwardRef(({ legislators, globalMilestones, ipc, mep, onRemov
   // Tooltip Personalizado con Hitos
   const CustomTooltip = ({ active, payload, label }: { active?: boolean, payload?: any, label?: string | number }) => {
     if (!active || !payload || !payload.length) return null;
-    
+
     return (
-      <div className="bg-white p-3 border shadow-lg rounded text-xs z-50">
+      <div className="bg-white p-3 border shadow-lg rounded text-xs z-50 max-w-xs">
         <p className="font-bold mb-1">{label}</p>
-        
+
         {legislators.map((l, idx) => {
           const item = payload.find((p: any) => p.dataKey === l.cuit);
           if (!item) return null;
-          const banks = item.payload.banks[l.cuit] || [];
-          
+          const banks = item.payload.banks[l.cuit] || { propio: [], familiares: {} };
+
           const personalMilestones = (l.hitos_personales || []).filter(h => h.fecha === label);
-          const relevantGlobalMilestones = globalMilestones.filter(m => 
+          const relevantGlobalMilestones = globalMilestones.filter(m =>
             m.fecha === label && (
-              ['global', 'voto', 'politico'].includes(m.tipo || '') || 
+              ['global', 'voto', 'politico'].includes(m.tipo || '') ||
               teniaCargo(l, m.tipo as any, m.fecha)
             )
           );
           const milestones = [...personalMilestones, ...relevantGlobalMilestones];
+          const familiarEntries = Object.entries(banks.familiares as { [parentesco: string]: Bank[] });
 
           return (
             <div key={l.cuit} className="mb-2 border-b pb-1 last:border-0">
@@ -204,11 +219,32 @@ const DebtChart = forwardRef(({ legislators, globalMilestones, ipc, mep, onRemov
                     <Flag size={10} /> {m.texto}
                 </div>
               ))}
-              <div className="opacity-70 pl-2">
-                {banks.map((b: Bank, i: number) => (
-                  <div key={i}>{b.entidad}: {formatMoney(b.monto)}</div>
-                ))}
-              </div>
+              {/* Deuda propia */}
+              {(banks.propio.length > 0) && (
+                <div className="mt-1">
+                  {includeFamiliares && familiarEntries.length > 0 && (
+                    <p className="font-semibold opacity-60 uppercase tracking-wide" style={{ fontSize: 9 }}>Titular</p>
+                  )}
+                  <div className="opacity-70 pl-2">
+                    {banks.propio.map((b: Bank, i: number) => (
+                      <div key={i}>{b.entidad}: {formatMoney(b.monto)}</div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {/* Deuda familiares */}
+              {familiarEntries.map(([parentesco, records]) => (
+                <div key={parentesco} className="mt-1">
+                  <p className="font-semibold opacity-60 uppercase tracking-wide flex items-center gap-1" style={{ fontSize: 9 }}>
+                    <Users size={9} /> {parentesco}
+                  </p>
+                  <div className="opacity-70 pl-2">
+                    {records.map((b: Bank, i: number) => (
+                      <div key={i}>{b.entidad}: {formatMoney(b.monto)}</div>
+                    ))}
+                  </div>
+                </div>
+              ))}
             </div>
           );
         })}
@@ -226,10 +262,10 @@ const DebtChart = forwardRef(({ legislators, globalMilestones, ipc, mep, onRemov
               <HelpCircle size={18} />
             </button>
           )}
-          <div className="sm:ml-auto flex items-center gap-2">
+          <div className="sm:ml-auto flex items-center gap-2 flex-wrap">
             {copied && <span className="text-sm text-green-600 font-semibold animate-pulse mr-2">¡Link copiado!</span>}
             {onShare && (
-              <button 
+              <button
                 onClick={onShare}
                 className="p-2 rounded-full hover:bg-gray-100 text-gray-500 transition-colors hidden md:block"
                 title="Compartir"
@@ -237,8 +273,20 @@ const DebtChart = forwardRef(({ legislators, globalMilestones, ipc, mep, onRemov
                 <Share2 size={18} />
               </button>
             )}
-            <select 
-              value={currencyMode} 
+            <button
+              onClick={() => setIncludeFamiliares(v => !v)}
+              className={`flex items-center gap-1 text-xs px-2 py-1 rounded border transition-colors ${
+                includeFamiliares
+                  ? 'bg-blue-600 text-white border-blue-600'
+                  : 'bg-gray-50 text-gray-600 border-gray-300 hover:bg-gray-100'
+              }`}
+              title="Incluir deuda de familiares"
+            >
+              <Users size={13} />
+              Familiares
+            </button>
+            <select
+              value={currencyMode}
               onChange={e => setCurrencyMode(e.target.value as CurrencyMode)}
               className="text-xs border border-gray-300 rounded px-2 py-1 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 outline-none"
             >
@@ -257,7 +305,12 @@ const DebtChart = forwardRef(({ legislators, globalMilestones, ipc, mep, onRemov
             >
               <div className="w-3 h-3 rounded-full" style={{ backgroundColor: l.color || COLORS[idx % COLORS.length] }}></div>
               <div>
-                <div className="font-bold text-sm">{l.nombre}</div>
+                <div className="font-bold text-sm flex items-center gap-1">
+                  {l.nombre}
+                  {l.familiares && l.familiares.length > 0 && (
+                    <Users size={13} className="text-blue-400 shrink-0" title="Tiene datos de familiares" />
+                  )}
+                </div>
                 <div className="flex gap-1 mt-1 flex-wrap">
                   {l.partido && <span className="text-[10px] bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded-full">{l.partido}</span>}
                   {l.distrito && <span className="text-[10px] bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded-full">{l.distrito}</span>}
