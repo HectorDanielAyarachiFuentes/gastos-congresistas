@@ -14568,6 +14568,432 @@
       "cambios_nivel": false
     },
     {
+      "cuit": "20254783855",
+      "nombre": "COSTA PABLO MARTIN",
+      "cargo": "Presidente/a",
+      "unidad": "Obra Social de las Fuerzas Federales de Seguridad (OSFFESEG)",
+      "historial": [
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2024-02",
+          "situacion": 1,
+          "monto": 367
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2024-02",
+          "situacion": 1,
+          "monto": 1790
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2024-03",
+          "situacion": 1,
+          "monto": 161
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2024-03",
+          "situacion": 1,
+          "monto": 1737
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2024-04",
+          "situacion": 1,
+          "monto": 574
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2024-04",
+          "situacion": 1,
+          "monto": 2105
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2024-05",
+          "situacion": 1,
+          "monto": 762
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2024-05",
+          "situacion": 1,
+          "monto": 2456
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2024-06",
+          "situacion": 1,
+          "monto": 807
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2024-06",
+          "situacion": 1,
+          "monto": 2341
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2024-07",
+          "situacion": 1,
+          "monto": 14382
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2024-07",
+          "situacion": 1,
+          "monto": 2685
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2024-08",
+          "situacion": 1,
+          "monto": 16260
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2024-08",
+          "situacion": 1,
+          "monto": 2169
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2024-09",
+          "situacion": 1,
+          "monto": 15756
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2024-09",
+          "situacion": 1,
+          "monto": 2406
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2024-10",
+          "situacion": 1,
+          "monto": 16843
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2024-10",
+          "situacion": 1,
+          "monto": 2189
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2024-11",
+          "situacion": 1,
+          "monto": 17415
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2024-11",
+          "situacion": 1,
+          "monto": 2008
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2024-12",
+          "situacion": 1,
+          "monto": 16488
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2024-12",
+          "situacion": 1,
+          "monto": 3055
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2025-01",
+          "situacion": 1,
+          "monto": 12813
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2025-01",
+          "situacion": 1,
+          "monto": 1855
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2025-02",
+          "situacion": 1,
+          "monto": 15899
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2025-02",
+          "situacion": 1,
+          "monto": 2180
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2025-03",
+          "situacion": 1,
+          "monto": 15205
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2025-03",
+          "situacion": 1,
+          "monto": 1654
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2025-04",
+          "situacion": 1,
+          "monto": 15325
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2025-04",
+          "situacion": 1,
+          "monto": 3078
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2025-05",
+          "situacion": 1,
+          "monto": 15461
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2025-05",
+          "situacion": 1,
+          "monto": 2586
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2025-06",
+          "situacion": 1,
+          "monto": 14739
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2025-06",
+          "situacion": 1,
+          "monto": 2715
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2025-07",
+          "situacion": 1,
+          "monto": 14986
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2025-07",
+          "situacion": 1,
+          "monto": 3118
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2025-08",
+          "situacion": 1,
+          "monto": 14824
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2025-08",
+          "situacion": 1,
+          "monto": 2303
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2025-09",
+          "situacion": 1,
+          "monto": 13676
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2025-09",
+          "situacion": 1,
+          "monto": 2271
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2025-10",
+          "situacion": 1,
+          "monto": 13921
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2025-10",
+          "situacion": 1,
+          "monto": 2560
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2025-11",
+          "situacion": 1,
+          "monto": 14879
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2025-11",
+          "situacion": 1,
+          "monto": 2452
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2025-12",
+          "situacion": 1,
+          "monto": 14717
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2025-12",
+          "situacion": 1,
+          "monto": 2649
+        },
+        {
+          "entidad": "MERCADOLIBRE S.R.L.",
+          "fecha": "2025-12",
+          "situacion": 1,
+          "monto": 864
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2026-01",
+          "situacion": 1,
+          "monto": 16304
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2026-01",
+          "situacion": 1,
+          "monto": 2090
+        },
+        {
+          "entidad": "MERCADOLIBRE S.R.L.",
+          "fecha": "2026-01",
+          "situacion": 1,
+          "monto": 905
+        }
+      ],
+      "hitos_personales": [
+        {
+          "fecha": "2024-07",
+          "texto": "Cambio nivel deuda",
+          "color": "#f97316",
+          "tipo": "economico",
+          "cargo": "Presidente/a"
+        }
+      ],
+      "posible_crédito": false,
+      "cambios_nivel": true
+    },
+    {
+      "cuit": "20256417600",
+      "nombre": "COLLIA ALEJANDRO JAVIER",
+      "cargo": "Director/a Nacional",
+      "unidad": "Subsecretaría del Instituto Nacional de Asuntos Indígenas",
+      "historial": [
+        {
+          "entidad": "MERCADOLIBRE S.R.L.",
+          "fecha": "2024-06",
+          "situacion": 1,
+          "monto": 2
+        },
+        {
+          "entidad": "MERCADOLIBRE S.R.L.",
+          "fecha": "2024-11",
+          "situacion": 1,
+          "monto": 73
+        },
+        {
+          "entidad": "MERCADOLIBRE S.R.L.",
+          "fecha": "2024-12",
+          "situacion": 1,
+          "monto": 72
+        },
+        {
+          "entidad": "MERCADOLIBRE S.R.L.",
+          "fecha": "2025-01",
+          "situacion": 1,
+          "monto": 33
+        },
+        {
+          "entidad": "MERCADOLIBRE S.R.L.",
+          "fecha": "2025-02",
+          "situacion": 1,
+          "monto": 69
+        },
+        {
+          "entidad": "MERCADOLIBRE S.R.L.",
+          "fecha": "2025-03",
+          "situacion": 1,
+          "monto": 74
+        },
+        {
+          "entidad": "MERCADOLIBRE S.R.L.",
+          "fecha": "2025-04",
+          "situacion": 1,
+          "monto": 146
+        },
+        {
+          "entidad": "MERCADOLIBRE S.R.L.",
+          "fecha": "2025-05",
+          "situacion": 1,
+          "monto": 161
+        },
+        {
+          "entidad": "MERCADOLIBRE S.R.L.",
+          "fecha": "2025-06",
+          "situacion": 1,
+          "monto": 105
+        },
+        {
+          "entidad": "MERCADOLIBRE S.R.L.",
+          "fecha": "2025-07",
+          "situacion": 1,
+          "monto": 131
+        },
+        {
+          "entidad": "MERCADOLIBRE S.R.L.",
+          "fecha": "2025-08",
+          "situacion": 1,
+          "monto": 166
+        },
+        {
+          "entidad": "MERCADOLIBRE S.R.L.",
+          "fecha": "2025-09",
+          "situacion": 1,
+          "monto": 144
+        },
+        {
+          "entidad": "MERCADOLIBRE S.R.L.",
+          "fecha": "2025-10",
+          "situacion": 1,
+          "monto": 272
+        },
+        {
+          "entidad": "MERCADOLIBRE S.R.L.",
+          "fecha": "2025-11",
+          "situacion": 1,
+          "monto": 219
+        },
+        {
+          "entidad": "MERCADOLIBRE S.R.L.",
+          "fecha": "2025-12",
+          "situacion": 1,
+          "monto": 151
+        },
+        {
+          "entidad": "MERCADOLIBRE S.R.L.",
+          "fecha": "2026-01",
+          "situacion": 1,
+          "monto": 187
+        }
+      ],
+      "hitos_personales": [],
+      "posible_crédito": false,
+      "cambios_nivel": false
+    },
+    {
       "cuit": "20267576956",
       "nombre": "SIBILLA FERNANDO JORGE",
       "cargo": "Presidente/a - Director/a Titular",
@@ -15119,6 +15545,305 @@
           "fecha": "2026-01",
           "situacion": 1,
           "monto": 9355
+        }
+      ],
+      "hitos_personales": [],
+      "posible_crédito": false,
+      "cambios_nivel": false
+    },
+    {
+      "cuit": "20281432894",
+      "nombre": "MAHIQUES JUAN BAUTISTA",
+      "cargo": "Ministro",
+      "unidad": "Ministerio de Justicia",
+      "historial": [
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2024-02",
+          "situacion": 1,
+          "monto": 104
+        },
+        {
+          "entidad": "BANCO DE GALICIA Y BUENOS AIRES S.A.",
+          "fecha": "2024-02",
+          "situacion": 1,
+          "monto": 516
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2024-03",
+          "situacion": 1,
+          "monto": 64
+        },
+        {
+          "entidad": "BANCO DE GALICIA Y BUENOS AIRES S.A.",
+          "fecha": "2024-03",
+          "situacion": 1,
+          "monto": 483
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2024-04",
+          "situacion": 1,
+          "monto": 37
+        },
+        {
+          "entidad": "BANCO DE GALICIA Y BUENOS AIRES S.A.",
+          "fecha": "2024-04",
+          "situacion": 1,
+          "monto": 485
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2024-05",
+          "situacion": 1,
+          "monto": 19
+        },
+        {
+          "entidad": "BANCO DE GALICIA Y BUENOS AIRES S.A.",
+          "fecha": "2024-05",
+          "situacion": 1,
+          "monto": 481
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2024-06",
+          "situacion": 1,
+          "monto": 310
+        },
+        {
+          "entidad": "BANCO DE GALICIA Y BUENOS AIRES S.A.",
+          "fecha": "2024-06",
+          "situacion": 1,
+          "monto": 473
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2024-07",
+          "situacion": 1,
+          "monto": 791
+        },
+        {
+          "entidad": "BANCO DE GALICIA Y BUENOS AIRES S.A.",
+          "fecha": "2024-07",
+          "situacion": 1,
+          "monto": 558
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2024-08",
+          "situacion": 1,
+          "monto": 29
+        },
+        {
+          "entidad": "BANCO DE GALICIA Y BUENOS AIRES S.A.",
+          "fecha": "2024-08",
+          "situacion": 1,
+          "monto": 415
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2024-09",
+          "situacion": 1,
+          "monto": 151
+        },
+        {
+          "entidad": "BANCO DE GALICIA Y BUENOS AIRES S.A.",
+          "fecha": "2024-09",
+          "situacion": 1,
+          "monto": 643
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2024-10",
+          "situacion": 1,
+          "monto": 37
+        },
+        {
+          "entidad": "BANCO DE GALICIA Y BUENOS AIRES S.A.",
+          "fecha": "2024-10",
+          "situacion": 1,
+          "monto": 759
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2024-11",
+          "situacion": 1,
+          "monto": 37
+        },
+        {
+          "entidad": "BANCO DE GALICIA Y BUENOS AIRES S.A.",
+          "fecha": "2024-11",
+          "situacion": 1,
+          "monto": 641
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2024-12",
+          "situacion": 1,
+          "monto": 42
+        },
+        {
+          "entidad": "BANCO DE GALICIA Y BUENOS AIRES S.A.",
+          "fecha": "2024-12",
+          "situacion": 1,
+          "monto": 581
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2025-01",
+          "situacion": 1,
+          "monto": 47
+        },
+        {
+          "entidad": "BANCO DE GALICIA Y BUENOS AIRES S.A.",
+          "fecha": "2025-01",
+          "situacion": 1,
+          "monto": 797
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2025-02",
+          "situacion": 1,
+          "monto": 42
+        },
+        {
+          "entidad": "BANCO DE GALICIA Y BUENOS AIRES S.A.",
+          "fecha": "2025-02",
+          "situacion": 1,
+          "monto": 752
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2025-03",
+          "situacion": 1,
+          "monto": 49
+        },
+        {
+          "entidad": "BANCO DE GALICIA Y BUENOS AIRES S.A.",
+          "fecha": "2025-03",
+          "situacion": 1,
+          "monto": 1418
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2025-04",
+          "situacion": 1,
+          "monto": 117
+        },
+        {
+          "entidad": "BANCO DE GALICIA Y BUENOS AIRES S.A.",
+          "fecha": "2025-04",
+          "situacion": 1,
+          "monto": 650
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2025-05",
+          "situacion": 1,
+          "monto": 135
+        },
+        {
+          "entidad": "BANCO DE GALICIA Y BUENOS AIRES S.A.",
+          "fecha": "2025-05",
+          "situacion": 1,
+          "monto": 547
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2025-06",
+          "situacion": 1,
+          "monto": 49
+        },
+        {
+          "entidad": "BANCO DE GALICIA Y BUENOS AIRES S.A.",
+          "fecha": "2025-06",
+          "situacion": 1,
+          "monto": 491
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2025-07",
+          "situacion": 1,
+          "monto": 56
+        },
+        {
+          "entidad": "BANCO DE GALICIA Y BUENOS AIRES S.A.",
+          "fecha": "2025-07",
+          "situacion": 1,
+          "monto": 688
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2025-08",
+          "situacion": 1,
+          "monto": 43
+        },
+        {
+          "entidad": "BANCO DE GALICIA Y BUENOS AIRES S.A.",
+          "fecha": "2025-08",
+          "situacion": 1,
+          "monto": 658
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2025-09",
+          "situacion": 1,
+          "monto": 132
+        },
+        {
+          "entidad": "BANCO DE GALICIA Y BUENOS AIRES S.A.",
+          "fecha": "2025-09",
+          "situacion": 1,
+          "monto": 681
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2025-10",
+          "situacion": 1,
+          "monto": 45
+        },
+        {
+          "entidad": "BANCO DE GALICIA Y BUENOS AIRES S.A.",
+          "fecha": "2025-10",
+          "situacion": 1,
+          "monto": 626
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2025-11",
+          "situacion": 1,
+          "monto": 45
+        },
+        {
+          "entidad": "BANCO DE GALICIA Y BUENOS AIRES S.A.",
+          "fecha": "2025-11",
+          "situacion": 1,
+          "monto": 839
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2025-12",
+          "situacion": 1,
+          "monto": 76
+        },
+        {
+          "entidad": "BANCO DE GALICIA Y BUENOS AIRES S.A.",
+          "fecha": "2025-12",
+          "situacion": 1,
+          "monto": 834
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2026-01",
+          "situacion": 1,
+          "monto": 90
+        },
+        {
+          "entidad": "BANCO DE GALICIA Y BUENOS AIRES S.A.",
+          "fecha": "2026-01",
+          "situacion": 1,
+          "monto": 960
         }
       ],
       "hitos_personales": [],
