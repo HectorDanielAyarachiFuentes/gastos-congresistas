@@ -313,7 +313,32 @@ const DebtChart = forwardRef(({
     }
   };
 
-  if (legislators.length === 0) return <div className="p-10 text-gray-400">Seleccione hasta 4 funcionarios</div>;
+  if (legislators.length === 0) return (
+    <div className="flex-1 flex items-center justify-center p-6 bg-gray-50 h-full">
+      <div className="max-w-md w-full">
+        <h1 className="text-2xl font-bold text-gray-800 mb-2">Central de Deudores</h1>
+        <p className="text-gray-600 mb-6 text-sm leading-relaxed">
+          Explorá los registros de deuda de legisladores y funcionarios del Estado argentino
+          según el BCRA. Los datos muestran el total informado cada mes por los bancos,
+          lo que usualmente representa gastos de tarjeta de crédito u otros créditos.
+        </p>
+        <div className="space-y-3 mb-6">
+          <div className="flex items-start gap-3">
+            <span className="bg-blue-100 text-blue-700 font-bold rounded-full w-6 h-6 flex items-center justify-center text-sm shrink-0 mt-0.5">1</span>
+            <p className="text-sm text-gray-700">Buscá un funcionario o legislador en la lista de la izquierda</p>
+          </div>
+          <div className="flex items-start gap-3">
+            <span className="bg-blue-100 text-blue-700 font-bold rounded-full w-6 h-6 flex items-center justify-center text-sm shrink-0 mt-0.5">2</span>
+            <p className="text-sm text-gray-700">Hacé click para ver su historial de deuda en el gráfico</p>
+          </div>
+          <div className="flex items-start gap-3">
+            <span className="bg-blue-100 text-blue-700 font-bold rounded-full w-6 h-6 flex items-center justify-center text-sm shrink-0 mt-0.5">3</span>
+            <p className="text-sm text-gray-700">Seleccioná hasta 4 personas para comparar</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 
   const formatMoney = (val: number) => {
     if (currencyMode === 'usd') return `US$ ${new Intl.NumberFormat('es-AR').format(Math.round(val))}`;

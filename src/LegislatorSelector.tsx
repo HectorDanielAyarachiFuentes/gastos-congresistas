@@ -103,6 +103,7 @@ export default ({ legisladores, onSelect, selectedIds = [], selectedColors = {} 
     <div className="w-full md:w-80 h-full flex flex-col border-r border-gray-200 bg-white">
       <div className="p-4 border-b">
         <h2 className="font-bold text-gray-800">Funcionarios ({filteredAndSorted.length})</h2>
+        <p className="text-xs text-gray-500 mt-0.5 leading-snug hidden md:block">Deuda en el BCRA · hacé click para ver el historial</p>
         <input
           className="w-full mt-2 p-2 border rounded text-sm"
           placeholder="Buscar..."
