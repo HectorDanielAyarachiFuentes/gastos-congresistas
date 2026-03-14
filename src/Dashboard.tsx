@@ -187,7 +187,7 @@ export default function Dashboard() {
         </div>
       )}
       {!showMobileLanding && (
-        <div className="md:hidden fixed top-0 left-0 right-0 z-40 bg-white/95 backdrop-blur border-b border-gray-200 px-3 py-2">
+        <div className="md:hidden absolute top-0 left-0 right-0 z-40 bg-white/95 backdrop-blur border-b border-gray-200 px-3 py-2">
           <div className="flex items-center justify-between gap-2">
             <button
               onClick={() => setMobileView(v => v === 'list' ? 'chart' : 'list')}
