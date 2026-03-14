@@ -65,11 +65,6 @@ export default function Dashboard() {
   const [warning, setWarning] = useState<string | null>(null);
   const [mobileView, setMobileView] = useState<'list' | 'chart'>('list');
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-  const [showMobileLanding, setShowMobileLanding] = useState(() => {
-    const params = new URLSearchParams(window.location.search);
-    const hasSlugs = !!(params.get('funcionarios') || params.get('legisladores'));
-    return window.innerWidth < 768 && !hasSlugs;
-  });
   const [copied, setCopied] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
 
@@ -156,38 +151,7 @@ export default function Dashboard() {
 
   return (
     <div className="flex flex-col md:flex-row h-screen bg-gray-100 font-sans overflow-hidden relative">
-      {showMobileLanding && (
-        <div className="md:hidden fixed inset-0 z-50 flex flex-col items-center justify-center bg-white px-8 text-center">
-          <h1 className="text-3xl font-bold text-gray-800 mb-3">Central de Deudores</h1>
-          <p className="text-gray-600 mb-6 leading-relaxed">
-            Explorá los registros de deuda de legisladores y funcionarios del Estado argentino
-            según el BCRA. Los datos muestran el total informado cada mes por los bancos,
-            lo que usualmente representa gastos de tarjeta de crédito u otros créditos.
-          </p>
-          <div className="space-y-3 mb-8 text-left w-full max-w-xs">
-            <div className="flex items-start gap-3">
-              <span className="bg-blue-100 text-blue-700 font-bold rounded-full w-6 h-6 flex items-center justify-center text-sm shrink-0 mt-0.5">1</span>
-              <p className="text-sm text-gray-700">Buscá un funcionario o legislador en la lista</p>
-            </div>
-            <div className="flex items-start gap-3">
-              <span className="bg-blue-100 text-blue-700 font-bold rounded-full w-6 h-6 flex items-center justify-center text-sm shrink-0 mt-0.5">2</span>
-              <p className="text-sm text-gray-700">Tocalo para ver su historial de deuda</p>
-            </div>
-            <div className="flex items-start gap-3">
-              <span className="bg-blue-100 text-blue-700 font-bold rounded-full w-6 h-6 flex items-center justify-center text-sm shrink-0 mt-0.5">3</span>
-              <p className="text-sm text-gray-700">Comparás hasta 4 personas al mismo tiempo</p>
-            </div>
-          </div>
-          <button
-            onClick={() => setShowMobileLanding(false)}
-            className="w-full max-w-xs bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl text-lg transition-colors"
-          >
-            Explorar
-          </button>
-        </div>
-      )}
-      {!showMobileLanding && (
-        <div className="md:hidden absolute top-0 left-0 right-0 z-40 bg-white/95 backdrop-blur border-b border-gray-200 px-3 py-2">
+      <div className="md:hidden absolute top-0 left-0 right-0 z-40 bg-white/95 backdrop-blur border-b border-gray-200 px-3 py-2">
           <div className="flex items-center justify-between gap-2">
             <button
               onClick={() => setMobileView(v => v === 'list' ? 'chart' : 'list')}
@@ -216,9 +180,8 @@ export default function Dashboard() {
             )}
           </div>
         </div>
-      )}
 
-      <div className={`absolute inset-0 z-20 w-full h-full transition-transform duration-300 ease-in-out md:relative md:z-0 md:w-auto md:translate-x-0 ${mobileView === 'list' ? 'translate-x-0' : '-translate-x-full'} ${showMobileLanding ? '' : 'pt-14 md:pt-0'}`}>
+      <div className={`absolute inset-0 z-20 w-full h-full transition-transform duration-300 ease-in-out md:relative md:z-0 md:w-auto md:translate-x-0 ${mobileView === 'list' ? 'translate-x-0' : '-translate-x-full'} pt-14 md:pt-0`}>
         <LegislatorSelector 
           legisladores={legisladores} 
           onSelect={handleSelect} 
@@ -227,7 +190,7 @@ export default function Dashboard() {
         />
       </div>
 
-      <div className={`absolute inset-0 z-10 w-full h-full transition-transform duration-300 ease-in-out md:relative md:z-0 md:flex-1 md:translate-x-0 ${mobileView === 'chart' ? 'translate-x-0' : 'translate-x-full'} ${showMobileLanding ? '' : 'pt-14 md:pt-0'}`}>
+      <div className={`absolute inset-0 z-10 w-full h-full transition-transform duration-300 ease-in-out md:relative md:z-0 md:flex-1 md:translate-x-0 ${mobileView === 'chart' ? 'translate-x-0' : 'translate-x-full'} pt-14 md:pt-0`}>
         <DebtChart
           legislators={selected} 
           globalMilestones={meta.hitos_globales} 
