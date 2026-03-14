@@ -281,13 +281,35 @@ const DebtChart = forwardRef(({
 
   const xAxisTickFormatter = (date: string) => {
     const [year, month] = date.split('-');
-    const d = new Date(parseInt(year), parseInt(month) - 1);
+    const monthNum = parseInt(month);
+    const d = new Date(parseInt(year), monthNum - 1);
 
     // Capitalize first letter and remove period
     const monthStr = d.toLocaleDateString('es-AR', { month: 'short' });
     const formattedMonth = monthStr.charAt(0).toUpperCase() + monthStr.slice(1).replace('.', '');
 
-    return `${formattedMonth} '${year.substring(2)}`;
+    if (monthNum === 1) {
+      // Enero en dos líneas: nombre y año (para marcar cambio de año)
+      return `${formattedMonth}\n${year}`;
+    }
+
+    return formattedMonth;
+  };
+
+  const renderXAxisTick = (props: any) => {
+    const { x, y, payload } = props;
+    const label = xAxisTickFormatter(payload.value);
+    const lines = String(label).split('\n');
+
+    return (
+      <text x={x} y={y + 10} textAnchor="middle" fontSize={10} fill="#4b5563">
+        {lines.map((line: string, index: number) => (
+          <tspan key={index} x={x} dy={index === 0 ? 0 : 12}>
+            {line}
+          </tspan>
+        ))}
+      </text>
+    );
   };
 
   const yAxisTickFormatter = (value: number) => {
@@ -309,7 +331,7 @@ const DebtChart = forwardRef(({
       if (value > 0) {
         return `$${value.toLocaleString('es-AR', { maximumFractionDigits: 0 })}k`;
       }
-      return '$0';
+      return '';
     }
   };
 
@@ -498,21 +520,27 @@ const DebtChart = forwardRef(({
 
       <div ref={chartContainerRef} className="flex-1 min-h-48 md:bg-white md:p-4 md:rounded-lg md:shadow-sm">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData} margin={{ top: 20, right: 20, left: 0, bottom: isMobile ? 30 : 0 }}>
+          <BarChart data={chartData} margin={{ top: 10, right: 0, left: -20, bottom: 10 }}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} />
             <XAxis
               dataKey="date"
-              tick={{fontSize: 10}}
-              angle={isMobile ? -45 : 0}
-              textAnchor={isMobile ? "end" : "middle"}
-              height={isMobile ? 40 : 30}
+              tick={renderXAxisTick}
+              height={40}
               interval={xAxisInterval}
               tickFormatter={xAxisTickFormatter}
             />
             <YAxis
               tickFormatter={yAxisTickFormatter}
-              tick={{fontSize: 11}}
-              width={65}
+              tick={{
+                fontSize: 11,
+                textAnchor: 'start',
+                dx: 8,
+                fill: '#111',
+                stroke: '#fff',
+                strokeWidth: 3,
+                paintOrder: 'stroke fill',
+              }}
+              width={55}
             />
             <Tooltip content={CustomTooltip} />
 
