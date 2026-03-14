@@ -1,4 +1,4 @@
-import { useMemo, useState, useRef, forwardRef, useImperativeHandle } from 'react';
+import { useMemo, useState, useRef, forwardRef, useImperativeHandle, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, ReferenceDot, Brush } from 'recharts';
 
 // Importa tu JSON generado por Python
@@ -37,6 +37,12 @@ interface SegmentInfo {
   totalMonto: number;
 }
 
+interface MilestoneChipStyle {
+  color: string;
+  backgroundColor: string;
+  borderColor: string;
+}
+
 function tintColor(hex: string, amount: number): string {
   // amount 0 = original color, 1 = white
   const r = parseInt(hex.slice(1, 3), 16);
@@ -46,6 +52,15 @@ function tintColor(hex: string, amount: number): string {
   const ng = Math.round(g + (255 - g) * amount);
   const nb = Math.round(b + (255 - b) * amount);
   return `#${nr.toString(16).padStart(2, '0')}${ng.toString(16).padStart(2, '0')}${nb.toString(16).padStart(2, '0')}`;
+}
+
+function getMilestoneChipStyle(color?: string): MilestoneChipStyle {
+  const resolvedColor = color || GRAY;
+  return {
+    color: resolvedColor,
+    backgroundColor: tintColor(resolvedColor, 0.9),
+    borderColor: tintColor(resolvedColor, 0.55),
+  };
 }
 
 const teniaCargo = (legislator: Legislator, cargo: string | undefined, fecha: string): boolean => {
@@ -296,6 +311,25 @@ const DebtChart = forwardRef(({
     return formattedMonth;
   };
 
+  const [milestoneHint, setMilestoneHint] = useState<{ text: string; x: number } | null>(null);
+  const [activeMilestoneKey, setActiveMilestoneKey] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!milestoneHint) return;
+
+    const handleOutsideClick = (event: MouseEvent) => {
+      const target = event.target as Element | null;
+      if (!target) return;
+      if (target.closest('[data-milestone-hint="true"]')) return;
+      if (target.closest('[data-milestone-icon="true"]')) return;
+      setMilestoneHint(null);
+      setActiveMilestoneKey(null);
+    };
+
+    document.addEventListener('click', handleOutsideClick);
+    return () => document.removeEventListener('click', handleOutsideClick);
+  }, [milestoneHint]);
+
   const renderXAxisTick = (props: any) => {
     const { x, y, payload } = props;
     const label = xAxisTickFormatter(payload.value);
@@ -312,7 +346,98 @@ const DebtChart = forwardRef(({
     );
   };
 
+  const MilestoneLabel = (props: any) => {
+    const { x, text, color, milestoneKey, viewBox } = props;
+    // Recharts no siempre entrega `x` en labels custom de ReferenceLine; usamos fallback para mantener alineación.
+    const resolvedX = [x, viewBox?.x, viewBox?.cx].find((v) => typeof v === 'number');
+    if (typeof resolvedX !== 'number') return null;
+
+    // Ubicamos el ícono en la franja superior, fuera del área de barras.
+    const topY = 18;
+    const iconColor = color || '#0b5cff';
+    const isActive = activeMilestoneKey === milestoneKey;
+
+    return (
+      <g
+        transform={`translate(${resolvedX}, ${topY})`}
+        cursor="pointer"
+        data-milestone-icon="true"
+        onClick={(e: any) => {
+          e.stopPropagation();
+          if (activeMilestoneKey === milestoneKey) {
+            setMilestoneHint(null);
+            setActiveMilestoneKey(null);
+            return;
+          }
+          const rect = chartContainerRef.current?.getBoundingClientRect();
+          const clickX = rect ? e.clientX - rect.left : resolvedX;
+          setMilestoneHint({ text, x: clickX });
+          setActiveMilestoneKey(milestoneKey);
+        }}
+        style={{ userSelect: 'none' }}
+      >
+        <text
+          x={0}
+          y={0}
+          textAnchor="middle"
+          dominantBaseline="middle"
+          fontSize={isActive ? 18 : 17}
+          fontWeight={isActive ? 900 : 700}
+          fill={iconColor}
+          stroke={isActive ? iconColor : 'none'}
+          strokeWidth={isActive ? 0.6 : 0}
+          data-milestone-icon="true"
+        >
+          ⚑
+        </text>
+      </g>
+    );
+  };
+
+  const MilestoneHintRow = () => {
+    if (!milestoneHint) return null;
+
+    const containerWidth = chartContainerRef.current?.clientWidth ?? 0;
+    const clampedLeft = containerWidth > 0
+      ? Math.max(12, Math.min(milestoneHint.x, containerWidth - 12))
+      : milestoneHint.x;
+    const hintStyle = getMilestoneChipStyle(activeMilestoneKey ? verticalMilestones.find((m, idx) => `${m.fecha}-${m.texto}-${idx}` === activeMilestoneKey)?.color : undefined);
+
+    return (
+      <div
+        className={`${isMobile ? 'h-6 w-full overflow-hidden' : 'absolute top-0 z-30 w-max max-w-[calc(100%-1rem)]'}`}
+        data-milestone-hint="true"
+        onClick={(e) => e.stopPropagation()}
+        style={isMobile ? undefined : { left: clampedLeft, transform: 'translateX(-50%)' }}
+      >
+        <div
+          className={`rounded border font-semibold flex items-center gap-1 w-full ${isMobile ? 'px-1.5 py-0.5 text-[11px] leading-none' : 'px-2 py-1 text-xs'}`}
+          style={hintStyle}
+        >
+          <Flag size={isMobile ? 9 : 11} className="shrink-0" />
+          <span className={`${isMobile ? 'truncate' : ''}`}>{milestoneHint.text}</span>
+          <button
+            type="button"
+            className={`ml-auto shrink-0 font-bold leading-none ${isMobile ? 'text-[11px]' : ''}`}
+            aria-label="Cerrar hito"
+            onClick={(e) => {
+              e.stopPropagation();
+              setMilestoneHint(null);
+              setActiveMilestoneKey(null);
+            }}
+            style={{ color: hintStyle.color }}
+          >
+            ×
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+
   const yAxisTickFormatter = (value: number) => {
+    if (value === 0) return '';
+
     if (currencyMode === 'usd') {
       if (Math.abs(value) >= 1000000) {
         return `US$${(value / 1000000).toLocaleString('es-AR', { maximumFractionDigits: 1 })}M`;
@@ -321,7 +446,7 @@ const DebtChart = forwardRef(({
         return `US$${(value / 1000).toLocaleString('es-AR', { maximumFractionDigits: 1 })}k`;
       }
       return `US$${value.toLocaleString('es-AR')}`;
-    } else { // ARS (nominal or real), value is in thousands of pesos.
+    } else { // ARS (nominal o real), value está en miles de pesos.
       if (Math.abs(value) >= 1000000) { // 1,000,000k = 1B
         return `$${(value / 1000000).toLocaleString('es-AR', { maximumFractionDigits: 1 })}B`;
       }
@@ -388,7 +513,10 @@ const DebtChart = forwardRef(({
               teniaCargo(l, m.tipo as any, m.fecha)
             )
           );
-          const milestones = [...personalMilestones, ...relevantGlobalMilestones];
+          const milestones = [
+            ...personalMilestones.map(m => ({ ...m, displayColor: l.color || COLORS[idx % COLORS.length] })),
+            ...relevantGlobalMilestones.map(m => ({ ...m, displayColor: m.color || (legislators.length === 1 ? (l.color || COLORS[idx % COLORS.length]) : GRAY) })),
+          ];
           const familiarEntries = Object.entries(banks.familiares as { [parentesco: string]: Bank[] });
 
           return (
@@ -397,7 +525,11 @@ const DebtChart = forwardRef(({
                 {l.nombre}: {formatMoney(total)}
               </p>
               {milestones.map((m, i) => (
-                <div key={i} className="mb-1 p-1 bg-yellow-50 border border-yellow-200 rounded text-yellow-800 font-semibold flex items-center gap-1">
+                <div
+                  key={i}
+                  className="mb-1 p-1 rounded border font-semibold flex items-center gap-1"
+                  style={getMilestoneChipStyle((m as any).displayColor)}
+                >
                     <Flag size={10} /> {m.texto}
                 </div>
               ))}
@@ -518,9 +650,21 @@ const DebtChart = forwardRef(({
         </div>
       </div>
 
-      <div ref={chartContainerRef} className="flex-1 min-h-48 md:bg-white md:p-4 md:rounded-lg md:shadow-sm">
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData} margin={{ top: 10, right: 0, left: -20, bottom: 10 }}>
+      <div
+        ref={chartContainerRef}
+        className="relative flex-1 min-h-48 md:bg-white md:p-4 md:rounded-lg md:shadow-sm"
+        onClick={() => {
+          setMilestoneHint(null);
+          setActiveMilestoneKey(null);
+        }}
+      >
+        <div className="h-full flex flex-col">
+          <div className={`relative px-2 mb-1 shrink-0 ${isMobile ? 'h-6' : 'h-7'}`}>
+            <MilestoneHintRow />
+          </div>
+          <div className="flex-1">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={chartData} margin={{ top: 30, right: 0, left: -30, bottom: 10 }}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} />
             <XAxis
               dataKey="date"
@@ -528,19 +672,23 @@ const DebtChart = forwardRef(({
               height={40}
               interval={xAxisInterval}
               tickFormatter={xAxisTickFormatter}
+              axisLine={false}
+              tickLine={false}
             />
             <YAxis
               tickFormatter={yAxisTickFormatter}
+              axisLine={false}
+              tickLine={false}
               tick={{
                 fontSize: 11,
                 textAnchor: 'start',
-                dx: 8,
+                dx: 10,
                 fill: '#111',
                 stroke: '#fff',
                 strokeWidth: 3,
                 paintOrder: 'stroke fill',
               }}
-              width={55}
+              width={30}
             />
             <Tooltip content={CustomTooltip} />
 
@@ -571,16 +719,7 @@ const DebtChart = forwardRef(({
                 x={m.fecha}
                 stroke={m.color}
                 strokeDasharray="4 2"
-                label={{
-                    value: m.texto,
-                    position: 'insideTop',
-                    fill: m.color,
-                    fontSize: 10,
-                    fontWeight: 'bold',
-                    angle: -90, // Texto vertical para que no se pisen
-                    textAnchor: 'end',
-                    dx: 4,
-                }}
+                label={<MilestoneLabel text={m.texto} color={m.color} milestoneKey={`${m.fecha}-${m.texto}-${idx}`} />}
               />
             ))}
 
@@ -593,8 +732,10 @@ const DebtChart = forwardRef(({
               />
             ))}
             <Brush dataKey="date" height={25} stroke={GRAY} tickFormatter={() => ''} />
-          </BarChart>
-        </ResponsiveContainer>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
       </div>
     </div>
   );
