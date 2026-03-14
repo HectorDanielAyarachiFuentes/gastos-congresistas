@@ -1,4 +1,8 @@
+import { useMemo } from 'react';
 import Dashboard from './Dashboard';
+import dbCargada from './legisladores_full.json';
+import politicosDb from './politicos_full.json';
+import type { DashboardData } from './types';
 
 function scrollToExplorer() {
   const target = document.getElementById('explorador');
@@ -7,6 +11,48 @@ function scrollToExplorer() {
 }
 
 export default function App() {
+  const { data: rawLegisladores } = dbCargada as DashboardData;
+  const { data: rawPoliticos } = politicosDb as DashboardData;
+
+  const heroMetrics = useMemo(() => {
+    const politicosByCuit = new Map(rawPoliticos.map((p) => [p.cuit, p]));
+    const merged = rawLegisladores.map((l) => {
+      const pol = politicosByCuit.get(l.cuit);
+      return pol ? { ...l, unidad: pol.unidad } : l;
+    });
+    const legCuits = new Set(rawLegisladores.map((l) => l.cuit));
+    const combined = [...merged, ...rawPoliticos.filter((p) => !legCuits.has(p.cuit))];
+
+    let latestMonth = '';
+
+    combined.forEach((l) => {
+      (l.historial || []).forEach((h) => {
+        if (h.fecha > latestMonth) latestMonth = h.fecha;
+      });
+
+      (l.familiares || []).forEach((f) => {
+        (f.historial || []).forEach((h) => {
+          if (h.fecha > latestMonth) latestMonth = h.fecha;
+        });
+      });
+    });
+
+    const [year, month] = latestMonth.split('-');
+    const monthNames = [
+      'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+    ];
+    const monthIndex = Number(month) - 1;
+    const latestMonthLabel = year && monthIndex >= 0 && monthIndex < 12
+      ? `${monthNames[monthIndex]} ${year}`
+      : latestMonth;
+
+    return {
+      funcionariosCount: combined.length,
+      latestMonthLabel,
+    };
+  }, [rawLegisladores, rawPoliticos]);
+
   return (
     <div className="min-h-screen bg-gray-100 text-gray-800">
       <main>
@@ -26,6 +72,17 @@ export default function App() {
                 <li>• Los familiares surgen de las declaraciones juradas patrimoniales.</li>
                 <li>• El historial de deuda proviene de la base Central de Deudores del BCRA.</li>
               </ul>
+
+              <div className="grid grid-cols-2 gap-2 pt-1">
+                <div className="rounded-lg border border-blue-200 bg-white/70 px-2.5 py-2">
+                  <p className="text-[10px] font-semibold uppercase leading-tight tracking-wide text-blue-700">Funcionarios registrados</p>
+                  <p className="mt-0.5 text-lg font-black leading-tight text-gray-900 md:text-xl">{heroMetrics.funcionariosCount.toLocaleString('es-AR')}</p>
+                </div>
+                <div className="rounded-lg border border-blue-200 bg-white/70 px-2.5 py-2">
+                  <p className="text-[10px] font-semibold uppercase leading-tight tracking-wide text-blue-700">Ultimo mes disponible</p>
+                  <p className="mt-0.5 text-sm font-black leading-tight text-gray-900 md:text-base">{heroMetrics.latestMonthLabel || 'Sin datos'}</p>
+                </div>
+              </div>
             </div>
 
             <div>
