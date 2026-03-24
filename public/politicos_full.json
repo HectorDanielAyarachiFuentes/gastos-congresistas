@@ -15181,6 +15181,302 @@
       }
     },
     {
+      "cuit": "20265201076",
+      "nombre": "MARTINEZ LUCAS DANIEL",
+      "cargo": "Director/a",
+      "unidad": "Secretaría de Gestión Administrativa",
+      "historial": [
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2024-02",
+          "situacion": 1,
+          "monto": 335
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2024-02",
+          "situacion": 1,
+          "monto": 120
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2024-03",
+          "situacion": 1,
+          "monto": 203
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2024-03",
+          "situacion": 1,
+          "monto": 83
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2024-04",
+          "situacion": 1,
+          "monto": 201
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2024-04",
+          "situacion": 1,
+          "monto": 290
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2024-05",
+          "situacion": 1,
+          "monto": 165
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2024-05",
+          "situacion": 1,
+          "monto": 180
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2024-06",
+          "situacion": 1,
+          "monto": 214
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2024-06",
+          "situacion": 1,
+          "monto": 111
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2024-07",
+          "situacion": 1,
+          "monto": 195
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2024-07",
+          "situacion": 1,
+          "monto": 1166
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2024-08",
+          "situacion": 1,
+          "monto": 199
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2024-08",
+          "situacion": 1,
+          "monto": 781
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2024-09",
+          "situacion": 1,
+          "monto": 139
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2024-09",
+          "situacion": 1,
+          "monto": 428
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2024-10",
+          "situacion": 1,
+          "monto": 137
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2024-10",
+          "situacion": 1,
+          "monto": 62
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2024-11",
+          "situacion": 1,
+          "monto": 248
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2024-11",
+          "situacion": 1,
+          "monto": 61
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2024-12",
+          "situacion": 1,
+          "monto": 330
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2025-01",
+          "situacion": 1,
+          "monto": 462
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2025-02",
+          "situacion": 1,
+          "monto": 315
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2025-03",
+          "situacion": 1,
+          "monto": 292
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2025-03",
+          "situacion": 1,
+          "monto": 158
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2025-04",
+          "situacion": 1,
+          "monto": 355
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2025-05",
+          "situacion": 1,
+          "monto": 743
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2025-06",
+          "situacion": 1,
+          "monto": 918
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2025-06",
+          "situacion": 1,
+          "monto": 227
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2025-07",
+          "situacion": 1,
+          "monto": 246
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2025-07",
+          "situacion": 1,
+          "monto": 420
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2025-08",
+          "situacion": 1,
+          "monto": 658
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2025-08",
+          "situacion": 1,
+          "monto": 104
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2025-09",
+          "situacion": 1,
+          "monto": 416
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2025-09",
+          "situacion": 1,
+          "monto": 78
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2025-10",
+          "situacion": 1,
+          "monto": 1028
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2025-10",
+          "situacion": 1,
+          "monto": 100
+        },
+        {
+          "entidad": "TARJETA NARANJA S.A.",
+          "fecha": "2025-10",
+          "situacion": 1,
+          "monto": 161
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2025-11",
+          "situacion": 1,
+          "monto": 563
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2025-11",
+          "situacion": 1,
+          "monto": 26
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2025-12",
+          "situacion": 1,
+          "monto": 358
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2025-12",
+          "situacion": 1,
+          "monto": 45
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2025-12",
+          "situacion": 1,
+          "monto": 102
+        },
+        {
+          "entidad": "MERCADOLIBRE S.R.L.",
+          "fecha": "2025-12",
+          "situacion": 1,
+          "monto": 108
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2026-01",
+          "situacion": 1,
+          "monto": 192
+        },
+        {
+          "entidad": "BANCO SANTANDER ARGENTINA S.A.",
+          "fecha": "2026-01",
+          "situacion": 1,
+          "monto": 139
+        },
+        {
+          "entidad": "MERCADOLIBRE S.R.L.",
+          "fecha": "2026-01",
+          "situacion": 1,
+          "monto": 87
+        }
+      ],
+      "hitos_personales": [],
+      "posible_crédito": false,
+      "cambios_nivel": false,
+      "hipoteca_bcra": {
+        "tiene": false
+      }
+    },
+    {
       "cuit": "20267576956",
       "nombre": "SIBILLA FERNANDO JORGE",
       "cargo": "Presidente/a - Director/a Titular",
@@ -16361,6 +16657,164 @@
           "fecha": "2026-01",
           "situacion": 1,
           "monto": 10320
+        }
+      ],
+      "hitos_personales": [],
+      "posible_crédito": false,
+      "cambios_nivel": false,
+      "hipoteca_bcra": {
+        "tiene": false
+      }
+    },
+    {
+      "cuit": "20288616729",
+      "nombre": "",
+      "cargo": "Director/a",
+      "unidad": "Subsecretaría de Gestión Administrativa",
+      "historial": [
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2024-02",
+          "situacion": 1,
+          "monto": 834
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2024-03",
+          "situacion": 1,
+          "monto": 632
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2024-04",
+          "situacion": 1,
+          "monto": 631
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2024-05",
+          "situacion": 1,
+          "monto": 759
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2024-06",
+          "situacion": 1,
+          "monto": 792
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2024-07",
+          "situacion": 1,
+          "monto": 1347
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2024-08",
+          "situacion": 1,
+          "monto": 3100
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2024-09",
+          "situacion": 1,
+          "monto": 2174
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2024-10",
+          "situacion": 1,
+          "monto": 2388
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2024-11",
+          "situacion": 2,
+          "monto": 1535
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2024-12",
+          "situacion": 1,
+          "monto": 2632
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2025-01",
+          "situacion": 1,
+          "monto": 993
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2025-02",
+          "situacion": 1,
+          "monto": 568
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2025-03",
+          "situacion": 1,
+          "monto": 325
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2025-04",
+          "situacion": 1,
+          "monto": 653
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2025-05",
+          "situacion": 1,
+          "monto": 356
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2025-06",
+          "situacion": 1,
+          "monto": 207
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2025-07",
+          "situacion": 1,
+          "monto": 380
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2025-08",
+          "situacion": 1,
+          "monto": 353
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2025-09",
+          "situacion": 1,
+          "monto": 260
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2025-10",
+          "situacion": 1,
+          "monto": 268
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2025-11",
+          "situacion": 1,
+          "monto": 547
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2025-12",
+          "situacion": 1,
+          "monto": 742
+        },
+        {
+          "entidad": "BANCO DE LA NACION ARGENTINA",
+          "fecha": "2026-01",
+          "situacion": 1,
+          "monto": 540
         }
       ],
       "hitos_personales": [],
@@ -19811,6 +20265,19 @@
       }
     },
     {
+      "cuit": "",
+      "nombre": "",
+      "cargo": "",
+      "unidad": "",
+      "historial": [],
+      "hitos_personales": [],
+      "posible_crédito": false,
+      "cambios_nivel": false,
+      "hipoteca_bcra": {
+        "tiene": false
+      }
+    },
+    {
       "cuit": "23106687269",
       "nombre": "GUERRIERI ABEL FRANCISCO",
       "cargo": "Presidente/a",
@@ -20843,6 +21310,19 @@
           "monto": 4391
         }
       ],
+      "hitos_personales": [],
+      "posible_crédito": false,
+      "cambios_nivel": false,
+      "hipoteca_bcra": {
+        "tiene": false
+      }
+    },
+    {
+      "cuit": "",
+      "nombre": "",
+      "cargo": "",
+      "unidad": "",
+      "historial": [],
       "hitos_personales": [],
       "posible_crédito": false,
       "cambios_nivel": false,
@@ -22355,6 +22835,19 @@
           "monto": 280
         }
       ],
+      "hitos_personales": [],
+      "posible_crédito": false,
+      "cambios_nivel": false,
+      "hipoteca_bcra": {
+        "tiene": false
+      }
+    },
+    {
+      "cuit": "",
+      "nombre": "",
+      "cargo": "",
+      "unidad": "",
+      "historial": [],
       "hitos_personales": [],
       "posible_crédito": false,
       "cambios_nivel": false,
