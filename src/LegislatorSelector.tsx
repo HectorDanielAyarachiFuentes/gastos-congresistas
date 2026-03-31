@@ -147,21 +147,21 @@ export default ({ legisladores, onSelect, selectedIds = [], selectedColors = {} 
             </select>
           </div>
           {positionFilter === 'legisladores' && (
-            <div>
-              <label htmlFor="province" className="block text-gray-600 text-xs font-semibold mb-1">Provincia</label>
-              <select id="province" value={provinceFilter} onChange={e => setProvinceFilter(e.target.value)} className="w-full p-2 border rounded bg-white">
-                <option value="todas">Todas</option>
-                {provinces.map(p => <option key={p} value={p}>{p}</option>)}
-              </select>
-            </div>
-          )}
-          {positionFilter === 'legisladores' && (
-            <div>
-              <label htmlFor="party" className="block text-gray-600 text-xs font-semibold mb-1">Bloque</label>
-              <select id="party" value={partyFilter} onChange={e => setPartyFilter(e.target.value)} className="w-full p-2 border rounded bg-white">
-                <option value="todos">Todos</option>
-                {parties.map(p => <option key={p} value={p}>{p}</option>)}
-              </select>
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label htmlFor="province" className="block text-gray-600 text-xs font-semibold mb-1">Provincia</label>
+                <select id="province" value={provinceFilter} onChange={e => setProvinceFilter(e.target.value)} className="w-full p-2 border rounded bg-white">
+                  <option value="todas">Todas</option>
+                  {provinces.map(p => <option key={p} value={p}>{p}</option>)}
+                </select>
+              </div>
+              <div>
+                <label htmlFor="party" className="block text-gray-600 text-xs font-semibold mb-1">Bloque</label>
+                <select id="party" value={partyFilter} onChange={e => setPartyFilter(e.target.value)} className="w-full p-2 border rounded bg-white">
+                  <option value="todos">Todos</option>
+                  {parties.map(p => <option key={p} value={p}>{p}</option>)}
+                </select>
+              </div>
             </div>
           )}
           {positionFilter === 'apn' && (
