@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from 'react';
-import { Home, AlertCircle, X, Users, ShieldAlert } from 'lucide-react';
+import { Home, AlertCircle, X, Users, ShieldAlert, ArrowDownAZ, ArrowUpAZ, TrendingUp, BarChart2 } from 'lucide-react';
 
 import type { Legislator } from './types';
 import { COLORS } from './Colors';
@@ -130,13 +130,25 @@ export default ({ legisladores, onSelect, selectedIds = [], selectedColors = {} 
         />
         <div className="mt-4 space-y-2 text-sm">
           <div>
-            <label htmlFor="sort" className="block text-gray-600 text-xs font-semibold mb-1">Orden</label>
-            <select id="sort" value={sortOrder} onChange={e => setSortOrder(e.target.value)} className="w-full p-2 border rounded bg-white">
-              <option value="nombre_asc">Nombre (A-Z)</option>
-              <option value="nombre_desc">Nombre (Z-A)</option>
-              <option value="max_deuda_desc">Mayor Deuda Histórica</option>
-              <option value="promedio_deuda_desc">Promedio Deuda Histórica</option>
-            </select>
+            <span className="block text-gray-600 text-xs font-semibold mb-1">Orden</span>
+            <div className="flex gap-1">
+              {[
+                { value: 'nombre_asc', icon: <ArrowDownAZ size={14} />, label: 'A-Z' },
+                { value: 'nombre_desc', icon: <ArrowUpAZ size={14} />, label: 'Z-A' },
+                { value: 'max_deuda_desc', icon: <TrendingUp size={14} />, label: 'Máx' },
+                { value: 'promedio_deuda_desc', icon: <BarChart2 size={14} />, label: 'Prom' },
+              ].map(opt => (
+                <button
+                  key={opt.value}
+                  onClick={() => setSortOrder(opt.value)}
+                  title={{ nombre_asc: 'Nombre A-Z', nombre_desc: 'Nombre Z-A', max_deuda_desc: 'Mayor Deuda Histórica', promedio_deuda_desc: 'Promedio Deuda Histórica' }[opt.value]}
+                  className={`flex-1 flex items-center justify-center gap-1 py-1 px-1 rounded border text-xs ${sortOrder === opt.value ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'}`}
+                >
+                  {opt.icon}
+                  <span>{opt.label}</span>
+                </button>
+              ))}
+            </div>
           </div>
           <div>
             <label htmlFor="position" className="block text-gray-600 text-xs font-semibold mb-1">Poder</label>
