@@ -7546,6 +7546,134 @@
       }
     },
     {
+      "cuit": "20181769271",
+      "nombre": "MALDONADO SERGIO",
+      "cargo": "Presidente/a",
+      "unidad": "Obra Social de las Fuerzas Armadas (OSFA)",
+      "historial": [
+        {
+          "entidad": "BANCO PATAGONIA S.A.",
+          "fecha": "2024-02",
+          "situacion": 1,
+          "monto": 253
+        },
+        {
+          "entidad": "BANCO PATAGONIA S.A.",
+          "fecha": "2024-03",
+          "situacion": 1,
+          "monto": 462
+        },
+        {
+          "entidad": "BANCO PATAGONIA S.A.",
+          "fecha": "2024-04",
+          "situacion": 1,
+          "monto": 705
+        },
+        {
+          "entidad": "BANCO PATAGONIA S.A.",
+          "fecha": "2024-05",
+          "situacion": 1,
+          "monto": 1198
+        },
+        {
+          "entidad": "BANCO PATAGONIA S.A.",
+          "fecha": "2024-06",
+          "situacion": 1,
+          "monto": 1087
+        },
+        {
+          "entidad": "BANCO PATAGONIA S.A.",
+          "fecha": "2024-07",
+          "situacion": 1,
+          "monto": 1205
+        },
+        {
+          "entidad": "BANCO PATAGONIA S.A.",
+          "fecha": "2024-08",
+          "situacion": 1,
+          "monto": 1289
+        },
+        {
+          "entidad": "BANCO PATAGONIA S.A.",
+          "fecha": "2024-09",
+          "situacion": 1,
+          "monto": 1023
+        },
+        {
+          "entidad": "BANCO PATAGONIA S.A.",
+          "fecha": "2024-10",
+          "situacion": 1,
+          "monto": 670
+        },
+        {
+          "entidad": "BANCO PATAGONIA S.A.",
+          "fecha": "2024-11",
+          "situacion": 1,
+          "monto": 360
+        },
+        {
+          "entidad": "BANCO PATAGONIA S.A.",
+          "fecha": "2024-12",
+          "situacion": 1,
+          "monto": 544
+        },
+        {
+          "entidad": "BANCO PATAGONIA S.A.",
+          "fecha": "2025-01",
+          "situacion": 1,
+          "monto": 423
+        },
+        {
+          "entidad": "BANCO PATAGONIA S.A.",
+          "fecha": "2025-02",
+          "situacion": 1,
+          "monto": 536
+        },
+        {
+          "entidad": "BANCO PATAGONIA S.A.",
+          "fecha": "2025-03",
+          "situacion": 1,
+          "monto": 439
+        },
+        {
+          "entidad": "BANCO PATAGONIA S.A.",
+          "fecha": "2025-04",
+          "situacion": 1,
+          "monto": 330
+        },
+        {
+          "entidad": "BANCO PATAGONIA S.A.",
+          "fecha": "2025-05",
+          "situacion": 1,
+          "monto": 218
+        },
+        {
+          "entidad": "BANCO PATAGONIA S.A.",
+          "fecha": "2025-06",
+          "situacion": 1,
+          "monto": 239
+        },
+        {
+          "entidad": "BANCO PATAGONIA S.A.",
+          "fecha": "2025-07",
+          "situacion": 1,
+          "monto": 47
+        },
+        {
+          "entidad": "BANCO PATAGONIA S.A.",
+          "fecha": "2025-08",
+          "situacion": 1,
+          "monto": 48
+        }
+      ],
+      "hitos_personales": [],
+      "posible_crédito": false,
+      "cambios_nivel": false,
+      "hipoteca_bcra": {
+        "tiene": false
+      }
+    },
+    {
       "cuit": "20182946576",
       "nombre": "LOMBARDO NORBERTO FABIAN",
       "cargo": "Presidente/a - Director/a Titular Clase 'C'",
@@ -16668,7 +16796,7 @@
     },
     {
       "cuit": "20288616729",
-      "nombre": "",
+      "nombre": "GRASCHINSKY PABLO",
       "cargo": "Director/a",
       "unidad": "Subsecretaría de Gestión Administrativa",
       "historial": [
@@ -17579,6 +17707,272 @@
           "fecha": "2026-01",
           "situacion": 1,
           "monto": 7656
+        }
+      ],
+      "hitos_personales": [],
+      "posible_crédito": false,
+      "cambios_nivel": false,
+      "hipoteca_bcra": {
+        "tiene": false
+      }
+    },
+    {
+      "cuit": "20292474386",
+      "nombre": "AMERIO SEBASTIÁN JAVIER",
+      "cargo": "Procurador/a",
+      "unidad": "Procuración del Tesoro de la Nación",
+      "historial": [
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2024-02",
+          "situacion": 1,
+          "monto": 1093
+        },
+        {
+          "entidad": "BANCO BMA S.A.U.",
+          "fecha": "2024-02",
+          "situacion": 1,
+          "monto": 571
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2024-03",
+          "situacion": 1,
+          "monto": 905
+        },
+        {
+          "entidad": "BANCO BMA S.A.U.",
+          "fecha": "2024-03",
+          "situacion": 1,
+          "monto": 320
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2024-04",
+          "situacion": 1,
+          "monto": 2543
+        },
+        {
+          "entidad": "BANCO BMA S.A.U.",
+          "fecha": "2024-04",
+          "situacion": 1,
+          "monto": 167
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2024-05",
+          "situacion": 1,
+          "monto": 929
+        },
+        {
+          "entidad": "BANCO BMA S.A.U.",
+          "fecha": "2024-05",
+          "situacion": 1,
+          "monto": 200
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2024-06",
+          "situacion": 1,
+          "monto": 1288
+        },
+        {
+          "entidad": "BANCO BMA S.A.U.",
+          "fecha": "2024-06",
+          "situacion": 1,
+          "monto": 350
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2024-07",
+          "situacion": 1,
+          "monto": 4480
+        },
+        {
+          "entidad": "BANCO BMA S.A.U.",
+          "fecha": "2024-07",
+          "situacion": 1,
+          "monto": 634
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2024-08",
+          "situacion": 1,
+          "monto": 4184
+        },
+        {
+          "entidad": "BANCO BMA S.A.U.",
+          "fecha": "2024-08",
+          "situacion": 1,
+          "monto": 248
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2024-09",
+          "situacion": 1,
+          "monto": 3605
+        },
+        {
+          "entidad": "BANCO BMA S.A.U.",
+          "fecha": "2024-09",
+          "situacion": 1,
+          "monto": 322
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2024-10",
+          "situacion": 1,
+          "monto": 3300
+        },
+        {
+          "entidad": "BANCO BMA S.A.U.",
+          "fecha": "2024-10",
+          "situacion": 1,
+          "monto": 302
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2024-11",
+          "situacion": 1,
+          "monto": 2530
+        },
+        {
+          "entidad": "BANCO MACRO S.A.",
+          "fecha": "2024-11",
+          "situacion": 1,
+          "monto": 1063
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2024-12",
+          "situacion": 1,
+          "monto": 6474
+        },
+        {
+          "entidad": "BANCO MACRO S.A.",
+          "fecha": "2024-12",
+          "situacion": 1,
+          "monto": 240
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2025-01",
+          "situacion": 1,
+          "monto": 3562
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2025-02",
+          "situacion": 1,
+          "monto": 3023
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2025-03",
+          "situacion": 1,
+          "monto": 7536
+        },
+        {
+          "entidad": "MERCADOLIBRE S.R.L.",
+          "fecha": "2025-03",
+          "situacion": 1,
+          "monto": 38
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2025-04",
+          "situacion": 1,
+          "monto": 3373
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2025-05",
+          "situacion": 1,
+          "monto": 3481
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2025-06",
+          "situacion": 1,
+          "monto": 6105
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2025-07",
+          "situacion": 1,
+          "monto": 8462
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2025-08",
+          "situacion": 1,
+          "monto": 8172
+        },
+        {
+          "entidad": "BANCO MACRO S.A.",
+          "fecha": "2025-08",
+          "situacion": 1,
+          "monto": 54
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2025-09",
+          "situacion": 1,
+          "monto": 6363
+        },
+        {
+          "entidad": "BANCO MACRO S.A.",
+          "fecha": "2025-09",
+          "situacion": 1,
+          "monto": 329
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2025-10",
+          "situacion": 1,
+          "monto": 2473
+        },
+        {
+          "entidad": "BANCO MACRO S.A.",
+          "fecha": "2025-10",
+          "situacion": 1,
+          "monto": 407
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2025-11",
+          "situacion": 1,
+          "monto": 5970
+        },
+        {
+          "entidad": "BANCO MACRO S.A.",
+          "fecha": "2025-11",
+          "situacion": 1,
+          "monto": 1183
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2025-12",
+          "situacion": 1,
+          "monto": 7786
+        },
+        {
+          "entidad": "BANCO MACRO S.A.",
+          "fecha": "2025-12",
+          "situacion": 1,
+          "monto": 2218
+        },
+        {
+          "entidad": "BANCO DE LA CIUDAD DE BUENOS AIRES",
+          "fecha": "2026-01",
+          "situacion": 1,
+          "monto": 3275
+        },
+        {
+          "entidad": "BANCO MACRO S.A.",
+          "fecha": "2026-01",
+          "situacion": 1,
+          "monto": 1129
         }
       ],
       "hitos_personales": [],
@@ -20265,19 +20659,6 @@
       }
     },
     {
-      "cuit": "",
-      "nombre": "",
-      "cargo": "",
-      "unidad": "",
-      "historial": [],
-      "hitos_personales": [],
-      "posible_crédito": false,
-      "cambios_nivel": false,
-      "hipoteca_bcra": {
-        "tiene": false
-      }
-    },
-    {
       "cuit": "23106687269",
       "nombre": "GUERRIERI ABEL FRANCISCO",
       "cargo": "Presidente/a",
@@ -21310,19 +21691,6 @@
           "monto": 4391
         }
       ],
-      "hitos_personales": [],
-      "posible_crédito": false,
-      "cambios_nivel": false,
-      "hipoteca_bcra": {
-        "tiene": false
-      }
-    },
-    {
-      "cuit": "",
-      "nombre": "",
-      "cargo": "",
-      "unidad": "",
-      "historial": [],
       "hitos_personales": [],
       "posible_crédito": false,
       "cambios_nivel": false,
@@ -22835,19 +23203,6 @@
           "monto": 280
         }
       ],
-      "hitos_personales": [],
-      "posible_crédito": false,
-      "cambios_nivel": false,
-      "hipoteca_bcra": {
-        "tiene": false
-      }
-    },
-    {
-      "cuit": "",
-      "nombre": "",
-      "cargo": "",
-      "unidad": "",
-      "historial": [],
       "hitos_personales": [],
       "posible_crédito": false,
       "cambios_nivel": false,
