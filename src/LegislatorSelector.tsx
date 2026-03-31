@@ -38,6 +38,7 @@ export default ({ legisladores, onSelect, selectedIds = [], selectedColors = {} 
   const [provinceFilter, setProvinceFilter] = useState("todas");
   const [partyFilter, setPartyFilter] = useState("todos");
   const [unitFilter, setUnitFilter] = useState("todas");
+  const [cargoApnFilter, setCargoApnFilter] = useState("todos");
   const [creditFilter, setCreditFilter] = useState("todos");
   const [levelChangeFilter, setLevelChangeFilter] = useState("todos");
   const [familiaresFilter, setFamiliaresFilter] = useState("todos");
@@ -47,6 +48,7 @@ export default ({ legisladores, onSelect, selectedIds = [], selectedColors = {} 
   const provinces = useMemo(() => [...new Set(legisladores.filter(l => l.distrito !== undefined).map(l => l.distrito).filter(p => (p || '').trim() !== ''))].sort(), [legisladores]);
   const parties = useMemo(() => [...new Set(legisladores.filter(l => l.partido !== undefined).map(l => l.partido).filter(p => (p || '').trim() !== ''))].sort(), [legisladores]);
   const units = useMemo(() => [...new Set(legisladores.filter(l => l.unidad !== undefined).map(l => l.unidad).filter(u => (u || '').trim() !== ''))].sort(), [legisladores]);
+  const cargosApn = useMemo(() => [...new Set(legisladores.filter(l => !l.periodos && l.cargo).map(l => l.cargo).filter(c => (c || '').trim() !== ''))].sort(), [legisladores]);
 
   const garantiaFecha = useMemo(() => {
     const l = legisladores.find(l => l.hipoteca_bcra.tiene && l.hipoteca_bcra.fecha);
@@ -74,6 +76,7 @@ export default ({ legisladores, onSelect, selectedIds = [], selectedColors = {} 
       setPartyFilter('todos');
     } else if (positionFilter === 'legisladores') {
       setUnitFilter('todas');
+      setCargoApnFilter('todos');
     }
   }, [positionFilter]);
 
@@ -90,6 +93,7 @@ export default ({ legisladores, onSelect, selectedIds = [], selectedColors = {} 
         const provinceMatch = provinceFilter === 'todas' || l.distrito === provinceFilter;
         const partyMatch = partyFilter === 'todos' || l.partido === partyFilter;
         const unitMatch = unitFilter === 'todas' || l.unidad === unitFilter;
+        const cargoApnMatch = cargoApnFilter === 'todos' || l.cargo === cargoApnFilter;
 
         const creditMatch = creditFilter === 'todos' || (creditFilter === 'si' ? l.hipoteca_bcra.tiene : !l.hipoteca_bcra.tiene);
         const levelChangeMatch = levelChangeFilter === 'todos' || (levelChangeFilter === 'si' ? l.cambios_nivel : !l.cambios_nivel);
@@ -97,7 +101,7 @@ export default ({ legisladores, onSelect, selectedIds = [], selectedColors = {} 
         const familiaresMatch = familiaresFilter === 'todos' || (familiaresFilter === 'si' ? hasFamiliares : !hasFamiliares);
         const situacionMatch = situacionFilter === 'todos' || String(l.situacion_bcra ?? 1) === situacionFilter;
 
-        return selectedIds.includes(l.cuit) || (searchMatch && positionMatch && provinceMatch && partyMatch && unitMatch && creditMatch && levelChangeMatch && familiaresMatch && situacionMatch);
+        return selectedIds.includes(l.cuit) || (searchMatch && positionMatch && provinceMatch && partyMatch && unitMatch && cargoApnMatch && creditMatch && levelChangeMatch && familiaresMatch && situacionMatch);
       })
       .sort((a, b) => {
         const aSelected = selectedIds.includes(a.cuit);
@@ -115,7 +119,7 @@ export default ({ legisladores, onSelect, selectedIds = [], selectedColors = {} 
 
         return 0;
       });
-  }, [legisladores, debouncedSearchTerm, positionFilter, provinceFilter, partyFilter, unitFilter, creditFilter, levelChangeFilter, familiaresFilter, situacionFilter, selectedIds, sortOrder, debtStats]);
+  }, [legisladores, debouncedSearchTerm, positionFilter, provinceFilter, partyFilter, unitFilter, cargoApnFilter, creditFilter, levelChangeFilter, familiaresFilter, situacionFilter, selectedIds, sortOrder, debtStats]);
 
   return (
     <div className="w-full md:w-80 h-full flex flex-col border-r border-gray-200 bg-white">
@@ -177,12 +181,21 @@ export default ({ legisladores, onSelect, selectedIds = [], selectedColors = {} 
             </div>
           )}
           {positionFilter === 'apn' && (
-            <div>
-              <label htmlFor="unit" className="block text-gray-600 text-xs font-semibold mb-1">Unidad</label>
-              <select id="unit" value={unitFilter} onChange={e => setUnitFilter(e.target.value)} className="w-full p-2 border rounded bg-white">
-                <option value="todas">Todas</option>
-                {units.map(u => <option key={u} value={u}>{u}</option>)}
-              </select>
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label htmlFor="cargoApn" className="block text-gray-600 text-xs font-semibold mb-1">Cargo</label>
+                <select id="cargoApn" value={cargoApnFilter} onChange={e => setCargoApnFilter(e.target.value)} className="w-full p-2 border rounded bg-white">
+                  <option value="todos">Todos</option>
+                  {cargosApn.map(c => <option key={c} value={c}>{c}</option>)}
+                </select>
+              </div>
+              <div>
+                <label htmlFor="unit" className="block text-gray-600 text-xs font-semibold mb-1">Unidad</label>
+                <select id="unit" value={unitFilter} onChange={e => setUnitFilter(e.target.value)} className="w-full p-2 border rounded bg-white">
+                  <option value="todas">Todas</option>
+                  {units.map(u => <option key={u} value={u}>{u}</option>)}
+                </select>
+              </div>
             </div>
           )}
           <div className="grid grid-cols-2 gap-2">
@@ -245,6 +258,7 @@ export default ({ legisladores, onSelect, selectedIds = [], selectedColors = {} 
               setProvinceFilter("todas");
               setPartyFilter("todos");
               setUnitFilter("todas");
+              setCargoApnFilter("todos");
               setCreditFilter("todos");
               setLevelChangeFilter("todos");
               setFamiliaresFilter("todos");
