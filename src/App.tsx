@@ -118,7 +118,7 @@ export default function App() {
 
             <div>
               <button
-                onClick={scrollToExplorer}
+                onClick={() => scrollToExplorer()}
                 className="inline-flex items-center gap-3 rounded-2xl bg-blue-600 px-6 py-4 text-sm font-bold uppercase tracking-wide text-white transition hover:bg-blue-700"
               >
                 Bajar al explorador
