@@ -827,7 +827,7 @@ const DebtChart = forwardRef(({
                 <Share2 size={18} />
               </button>
             )}
-            <div className="relative hidden md:block" data-export-menu>
+            <div className="relative" data-export-menu>
               <button
                 onClick={() => setShowExportMenu(v => !v)}
                 className="p-2 rounded-full hover:bg-gray-100 transition-colors disabled:opacity-50"
