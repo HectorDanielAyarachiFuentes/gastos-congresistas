@@ -1,9 +1,10 @@
 import { useMemo, useState, useRef, forwardRef, useImperativeHandle, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, ReferenceDot, Brush } from 'recharts';
+import { toPng } from 'html-to-image';
 
 // Importa tu JSON generado por Python
 import type { Legislator, Milestone, CurrencyMode } from './types';
-import { Eye, EyeOff, Flag, HelpCircle, Share2, Users, X } from 'lucide-react';
+import { Camera, Check, Copy, Download, Eye, EyeOff, Flag, HelpCircle, Loader2, Share2, Users, X } from 'lucide-react';
 import { COLORS } from './Colors';
 import { SITUACION_BCRA } from './LegislatorSelector';
 
@@ -332,6 +333,214 @@ const DebtChart = forwardRef(({
 
   const [milestoneHint, setMilestoneHint] = useState<{ text: string; x: number } | null>(null);
   const [activeMilestoneKey, setActiveMilestoneKey] = useState<string | null>(null);
+  const [exportState, setExportState] = useState<'idle' | 'loading' | 'done'>('idle');
+  const [showExportMenu, setShowExportMenu] = useState(false);
+
+  // Close export menu when clicking outside
+  useEffect(() => {
+    if (!showExportMenu) return;
+    const handler = (e: MouseEvent) => {
+      const target = e.target as Element | null;
+      if (!target?.closest('[data-export-menu]')) setShowExportMenu(false);
+    };
+    document.addEventListener('click', handler);
+    return () => document.removeEventListener('click', handler);
+  }, [showExportMenu]);
+
+  const buildExportCanvas = async (): Promise<HTMLCanvasElement> => {
+    if (!chartContainerRef.current) throw new Error('No chart element');
+
+    const scale = 2;
+
+    // Temporarily hide brush so it doesn't appear in the export
+    const brushEl = chartContainerRef.current.querySelector('.recharts-brush') as HTMLElement | null;
+    const prevVisibility = brushEl?.style.visibility ?? '';
+    if (brushEl) brushEl.style.visibility = 'hidden';
+
+    let chartDataUrl: string;
+    try {
+      chartDataUrl = await toPng(chartContainerRef.current, {
+        backgroundColor: '#ffffff',
+        pixelRatio: scale,
+        skipFonts: true,
+      });
+    } finally {
+      if (brushEl) brushEl.style.visibility = prevVisibility;
+    }
+
+    const chartImg = new Image();
+    await new Promise<void>((resolve, reject) => {
+      chartImg.onload = () => resolve();
+      chartImg.onerror = reject;
+      chartImg.src = chartDataUrl;
+    });
+
+    const px = (n: number) => Math.round(n * scale);
+    const PADDING = px(16);
+    const TITLE_SIZE = px(20);
+    const NAME_SIZE = px(17);
+    const DETAIL_SIZE = px(14);
+    const FOOTER_H = px(48);
+
+    // Compute per-legislator stats from chartData
+    const legislatorStats = legislators.map(l => {
+      const monthlyTotals = chartData
+        .map(entry => Object.entries(entry)
+          .filter(([k]) => k.startsWith(l.cuit + SEP))
+          .reduce((sum, [, v]) => sum + (v as number), 0))
+        .filter(v => v > 0);
+      const avg = monthlyTotals.length > 0 ? monthlyTotals.reduce((a, b) => a + b, 0) / monthlyTotals.length : 0;
+      const max = monthlyTotals.length > 0 ? Math.max(...monthlyTotals) : 0;
+      return { avg, max };
+    });
+
+    // Calculate header height
+    let headerH = PADDING + TITLE_SIZE + px(12);
+    legislators.forEach(() => {
+      headerH += NAME_SIZE + px(4);
+      headerH += DETAIL_SIZE + px(4); // details or stats line
+      headerH += DETAIL_SIZE + px(4); // stats line
+      headerH += px(6);
+    });
+    headerH += PADDING;
+
+    const CHART_SCALE = 0.7;
+    const chartW = Math.round(chartImg.width * CHART_SCALE);
+    const chartH = Math.round(chartImg.height * CHART_SCALE);
+
+    const W = chartW;
+    const H = chartH + headerH + FOOTER_H;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = W;
+    canvas.height = H;
+    const ctx = canvas.getContext('2d')!;
+
+    // White background
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    let y = PADDING + TITLE_SIZE;
+    ctx.fillStyle = '#111827';
+    ctx.font = `bold ${TITLE_SIZE}px system-ui,Arial,sans-serif`;
+    ctx.fillText('Deuda BCRA · Central de Deudores', PADDING, y);
+    y += px(12);
+
+    // Legislators
+    legislators.forEach((l, idx) => {
+      const color = l.color || COLORS[idx % COLORS.length];
+      const stats = legislatorStats[idx];
+      const textX = PADDING + NAME_SIZE + px(6);
+
+      ctx.fillStyle = color;
+      ctx.fillRect(PADDING, y, NAME_SIZE, NAME_SIZE);
+      ctx.font = `bold ${NAME_SIZE}px system-ui,Arial,sans-serif`;
+      y += NAME_SIZE;
+      ctx.fillText(l.nombre, textX, y);
+      y += px(4);
+
+      const details = [l.cargo, l.partido, l.distrito, l.unidad].filter(Boolean).join(' · ');
+      ctx.fillStyle = '#6b7280';
+      ctx.font = `${DETAIL_SIZE}px system-ui,Arial,sans-serif`;
+      if (details) {
+        y += DETAIL_SIZE;
+        ctx.fillText(details, textX, y);
+        y += px(4);
+      }
+
+      y += DETAIL_SIZE;
+      ctx.fillText(`Promedio: ${formatMoney(stats.avg)}  ·  Máximo: ${formatMoney(stats.max)}`, textX, y);
+      y += px(4);
+
+      y += px(6);
+    });
+
+    // Chart (scaled down)
+    ctx.drawImage(chartImg, 0, headerH, chartW, chartH);
+
+    // Footer
+    const FOOTER_FONT = px(14);
+    ctx.fillStyle = '#6b7280';
+    ctx.font = `${FOOTER_FONT}px system-ui,Arial,sans-serif`;
+    const baseUrl = `${window.location.host}${window.location.pathname}`;
+    const lastDate = chartData.length > 0 ? chartData[chartData.length - 1].date : null;
+    const lastDateStr = lastDate
+      ? new Date(lastDate + '-02').toLocaleDateString('es-AR', { month: 'long', year: 'numeric' })
+      : null;
+    const currencyLabel = currencyMode === 'real'
+      ? `Ajustado por inflación a ${ipcDates.length > 0 ? new Date(ipcDates[ipcDates.length - 1] + '-02').toLocaleDateString('es-AR', { month: 'long', year: 'numeric' }) : ''}`
+      : currencyMode === 'usd'
+      ? 'Dólares MEP'
+      : null;
+    const footerParts = [baseUrl, lastDateStr ? `Última actualización: ${lastDateStr}` : null, currencyLabel].filter(Boolean);
+    const footerText = footerParts.join('  ·  ');
+    ctx.fillText(footerText, PADDING, H - FOOTER_H / 2 + FOOTER_FONT / 3);
+
+    return canvas;
+  };
+
+  const handleExportDownload = async () => {
+    setExportState('loading');
+    setShowExportMenu(false);
+    try {
+      const canvas = await buildExportCanvas();
+      const link = document.createElement('a');
+      const names = legislators.map(l => l.nombre).join('-').replace(/\s+/g, '_').slice(0, 60);
+      link.download = `deuda-bcra-${names}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      setExportState('done');
+    } catch (e) {
+      console.error('Export failed', e);
+      setExportState('idle');
+    } finally {
+      setTimeout(() => setExportState('idle'), 2000);
+    }
+  };
+
+  const handleExportCopy = async () => {
+    setExportState('loading');
+    setShowExportMenu(false);
+    try {
+      const canvas = await buildExportCanvas();
+      await new Promise<void>((resolve, reject) => {
+        canvas.toBlob(async blob => {
+          if (!blob) { reject(new Error('No blob')); return; }
+          navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
+            .then(resolve).catch(reject);
+        });
+      });
+      setExportState('done');
+    } catch (e) {
+      console.error('Copy failed', e);
+      setExportState('idle');
+    } finally {
+      setTimeout(() => setExportState('idle'), 2000);
+    }
+  };
+
+  const handleExportShare = async () => {
+    setExportState('loading');
+    setShowExportMenu(false);
+    try {
+      const canvas = await buildExportCanvas();
+      await new Promise<void>((resolve, reject) => {
+        canvas.toBlob(async blob => {
+          if (!blob) { reject(new Error('No blob')); return; }
+          const file = new File([blob], 'deuda-bcra.png', { type: 'image/png' });
+          navigator.share({ files: [file], title: 'Deuda BCRA · Central de Deudores', url: window.location.href })
+            .then(resolve).catch(reject);
+        });
+      });
+      setExportState('done');
+    } catch (e) {
+      console.error('Share failed', e);
+      setExportState('idle');
+    } finally {
+      setTimeout(() => setExportState('idle'), 2000);
+    }
+  };
 
   useEffect(() => {
     if (!milestoneHint) return;
@@ -613,11 +822,39 @@ const DebtChart = forwardRef(({
               <button
                 onClick={onShare}
                 className="p-2 rounded-full hover:bg-gray-100 text-gray-500 transition-colors hidden md:block"
-                title="Compartir"
+                title="Compartir link"
               >
                 <Share2 size={18} />
               </button>
             )}
+            <div className="relative hidden md:block" data-export-menu>
+              <button
+                onClick={() => setShowExportMenu(v => !v)}
+                className="p-2 rounded-full hover:bg-gray-100 transition-colors disabled:opacity-50"
+                style={{ color: exportState === 'done' ? '#22c55e' : '#6b7280' }}
+                title="Exportar imagen"
+                disabled={exportState === 'loading'}
+              >
+                {exportState === 'loading' ? <Loader2 size={18} className="animate-spin" /> :
+                 exportState === 'done' ? <Check size={18} /> :
+                 <Camera size={18} />}
+              </button>
+              {showExportMenu && (
+                <div className="absolute right-0 top-10 bg-white border border-gray-200 shadow-lg rounded-lg z-50 py-1 min-w-44" data-export-menu>
+                  <button onClick={handleExportDownload} className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2">
+                    <Download size={14} /> Descargar imagen
+                  </button>
+                  <button onClick={handleExportCopy} className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2">
+                    <Copy size={14} /> Copiar imagen
+                  </button>
+                  {typeof navigator !== 'undefined' && 'canShare' in navigator && (
+                    <button onClick={handleExportShare} className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2">
+                      <Share2 size={14} /> Compartir imagen
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
             <div className="flex w-full items-center gap-2 sm:w-auto">
               <label
                 htmlFor="include-familiares"
