@@ -1,5 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import React from "react";
 import satori from "satori";
@@ -20,6 +21,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, "..");
 const publicDir = path.join(rootDir, "public");
+const require = createRequire(import.meta.url);
 
 function monthLabel(isoMonth) {
   if (!isoMonth) return "Sin datos";
@@ -52,18 +54,8 @@ function formatNumber(value) {
   return new Intl.NumberFormat("es-AR").format(value);
 }
 
-async function readFirstAvailableFont(candidates) {
-  for (const candidate of candidates) {
-    try {
-      return await fs.readFile(candidate);
-    } catch {
-      continue;
-    }
-  }
-
-  throw new Error(
-    `No se encontro una fuente valida. Se probaron: ${candidates.join(", ")}`,
-  );
+async function readBundledFont(packagePath) {
+  return fs.readFile(require.resolve(packagePath));
 }
 
 async function readJson(filename) {
@@ -429,16 +421,12 @@ function buildImage(metrics) {
 
 async function main() {
   const [regularFont, boldFont, metrics] = await Promise.all([
-    readFirstAvailableFont([
-      "/Library/Fonts/Arial.ttf",
-      "/System/Library/Fonts/Supplemental/Arial.ttf",
-      "/System/Library/Fonts/Helvetica.ttc",
-    ]),
-    readFirstAvailableFont([
-      "/Library/Fonts/Arial Bold.ttf",
-      "/System/Library/Fonts/Supplemental/Arial Bold.ttf",
-      "/System/Library/Fonts/HelveticaNeue.ttc",
-    ]),
+    readBundledFont(
+      "@fontsource/public-sans/files/public-sans-latin-400-normal.woff",
+    ),
+    readBundledFont(
+      "@fontsource/public-sans/files/public-sans-latin-700-normal.woff",
+    ),
     loadMetrics(),
   ]);
 
@@ -447,13 +435,13 @@ async function main() {
     height: IMAGE_HEIGHT,
     fonts: [
       {
-        name: "Arial",
+        name: "Public Sans",
         data: regularFont,
         weight: 400,
         style: "normal",
       },
       {
-        name: "Arial",
+        name: "Public Sans",
         data: boldFont,
         weight: 700,
         style: "normal",
