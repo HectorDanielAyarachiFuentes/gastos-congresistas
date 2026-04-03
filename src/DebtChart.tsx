@@ -353,20 +353,51 @@ const DebtChart = forwardRef(({
 
     const scale = 2;
 
+    const el = chartContainerRef.current;
+
     // Temporarily hide brush so it doesn't appear in the export
-    const brushEl = chartContainerRef.current.querySelector('.recharts-brush') as HTMLElement | null;
+    const brushEl = el.querySelector('.recharts-brush') as HTMLElement | null;
     const prevVisibility = brushEl?.style.visibility ?? '';
     if (brushEl) brushEl.style.visibility = 'hidden';
 
+    // Force landscape dimensions for export: if portrait, constrain height so width > height
+    // Also add horizontal padding so chart edges aren't clipped (BarChart has right: 0 margin)
+    const origWidth = el.style.width;
+    const origHeight = el.style.height;
+    const origMinHeight = el.style.minHeight;
+    const origPaddingLeft = el.style.paddingLeft;
+    const origPaddingRight = el.style.paddingRight;
+    const svgEl = el.querySelector('svg') as SVGElement | null;
+    const origSvgOverflow = svgEl?.style.overflow ?? '';
+    const naturalW = el.offsetWidth;
+    const naturalH = el.offsetHeight;
+    const MIN_ASPECT = 1.6; // width/height
+    const CAPTURE_PAD = 12; // px padding added to container sides before capture
+    el.style.paddingLeft = CAPTURE_PAD + 'px';
+    el.style.paddingRight = CAPTURE_PAD + 'px';
+    if (svgEl) svgEl.style.overflow = 'visible';
+    if (naturalH > naturalW / MIN_ASPECT) {
+      const targetH = Math.round(naturalW / MIN_ASPECT);
+      el.style.height = targetH + 'px';
+      el.style.minHeight = targetH + 'px';
+    }
+    await new Promise(r => setTimeout(r, 200)); // wait for Recharts re-render
+
     let chartDataUrl: string;
     try {
-      chartDataUrl = await toPng(chartContainerRef.current, {
+      chartDataUrl = await toPng(el, {
         backgroundColor: '#ffffff',
         pixelRatio: scale,
         skipFonts: true,
       });
     } finally {
       if (brushEl) brushEl.style.visibility = prevVisibility;
+      el.style.width = origWidth;
+      el.style.height = origHeight;
+      el.style.minHeight = origMinHeight;
+      el.style.paddingLeft = origPaddingLeft;
+      el.style.paddingRight = origPaddingRight;
+      if (svgEl) svgEl.style.overflow = origSvgOverflow;
     }
 
     const chartImg = new Image();
@@ -406,11 +437,16 @@ const DebtChart = forwardRef(({
     headerH += PADDING;
 
     const CHART_SCALE = 0.7;
-    const chartW = Math.round(chartImg.width * CHART_SCALE);
-    const chartH = Math.round(chartImg.height * CHART_SCALE);
+    const rawChartW = Math.round(chartImg.width * CHART_SCALE);
+    const rawChartH = Math.round(chartImg.height * CHART_SCALE);
 
-    const W = chartW;
-    const H = chartH + headerH + FOOTER_H;
+    // Ensure canvas is wide enough for header text on narrow mobile screens
+    const MIN_W = px(500);
+    const CHART_PAD = PADDING * 2; // horizontal padding around the chart image
+    const scaledChartW = Math.max(rawChartW, MIN_W - CHART_PAD * 2);
+    const scaledChartH = rawChartW < scaledChartW ? Math.round(rawChartH * scaledChartW / rawChartW) : rawChartH;
+    const W = scaledChartW + CHART_PAD * 2;
+    const H = scaledChartH + headerH + FOOTER_H;
 
     const canvas = document.createElement('canvas');
     canvas.width = W;
@@ -457,8 +493,8 @@ const DebtChart = forwardRef(({
       y += px(6);
     });
 
-    // Chart (scaled down)
-    ctx.drawImage(chartImg, 0, headerH, chartW, chartH);
+    // Chart (scaled down, with horizontal padding)
+    ctx.drawImage(chartImg, CHART_PAD, headerH, scaledChartW, scaledChartH);
 
     // Footer
     const FOOTER_FONT = px(14);
