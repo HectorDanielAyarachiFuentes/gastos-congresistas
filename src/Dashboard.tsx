@@ -5,20 +5,7 @@ import LegislatorSelector from './LegislatorSelector';
 import type { DashboardData, Legislator } from './types';
 import { Share2, HelpCircle, X, Camera } from 'lucide-react';
 import { COLORS } from './Colors';
-
-const slugify = (text: string) => {
-  return text
-    .toString()
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .trim()
-    .replace(/\s+/g, "-")
-    .replace(/[^\w\-]+/g, "")
-    .replace(/\-\-+/g, "-");
-};
-
-type LegislatorWithSlug = Legislator & { slug: string };
+import { type LegislatorWithSlug, mergeDashboardPeople } from './people';
 
 interface DashboardProps {
   dbData: DashboardData;
@@ -27,37 +14,11 @@ interface DashboardProps {
 }
 
 export default function Dashboard({ dbData, politicosData, judicialData }: DashboardProps) {
-  const { meta, data: rawLegisladores } = dbData;
-  const { data: rawPoliticos } = politicosData;
-  const { data: rawJudicial } = judicialData;
+  const { meta } = dbData;
 
   const legisladores = useMemo(() => {
-    const politicosByCuit = new Map(rawPoliticos.map(p => [p.cuit, p]));
-    const merged = rawLegisladores.map(l => {
-      const pol = politicosByCuit.get(l.cuit);
-      return pol ? { ...l, unidad: pol.unidad, poder: 'legislativo' as const } : { ...l, poder: 'legislativo' as const };
-    });
-    const legCuits = new Set(rawLegisladores.map(l => l.cuit));
-    const execCuits = new Set(rawPoliticos.map(p => p.cuit));
-    const combined = [
-      ...merged,
-      ...rawPoliticos.filter(p => !legCuits.has(p.cuit)).map(p => ({ ...p, poder: 'ejecutivo' as const })),
-      ...rawJudicial.filter(j => !legCuits.has(j.cuit) && !execCuits.has(j.cuit)).map(j => ({ ...j, poder: 'judicial' as const })),
-    ];
-
-    const seen = new Map<string, number>();
-    return combined.map(l => {
-      let slug = slugify(l.nombre);
-      if (seen.has(slug)) {
-        const count = seen.get(slug)! + 1;
-        seen.set(slug, count);
-        slug = `${slug}-${count}`;
-      } else {
-        seen.set(slug, 1);
-      }
-      return { ...l, slug } as LegislatorWithSlug;
-    });
-  }, [rawLegisladores, rawPoliticos, rawJudicial]);
+    return mergeDashboardPeople(dbData, politicosData, judicialData);
+  }, [dbData, politicosData, judicialData]);
 
   const [selected, setSelected] = useState<LegislatorWithSlug[]>(() => {
     const params = new URLSearchParams(window.location.search);
@@ -97,12 +58,6 @@ export default function Dashboard({ dbData, politicosData, judicialData }: Dashb
   }, [warning]);
 
   useEffect(() => {
-    if (selected.length === 0) {
-      setMobileView('list');
-    }
-  }, [selected]);
-
-  useEffect(() => {
     const url = new URL(window.location.href);
     if (selected.length > 0) {
       url.searchParams.set('funcionarios', selected.map(l => l.slug).join(','));
@@ -126,7 +81,11 @@ export default function Dashboard({ dbData, politicosData, judicialData }: Dashb
     let selectionChanged = false;
 
     if (selected.some(l => l.cuit === lWithSlug.cuit)) {
-      setSelected(prev => prev.filter(l => l.cuit !== lWithSlug.cuit));
+      const nextSelected = selected.filter(l => l.cuit !== lWithSlug.cuit);
+      setSelected(nextSelected);
+      if (isMobile && nextSelected.length === 0) {
+        setMobileView('list');
+      }
       selectionChanged = true;
     } else if (selected.length >= 4) {
       setWarning("Solo se pueden comparar hasta 4 personas");
@@ -238,7 +197,15 @@ export default function Dashboard({ dbData, politicosData, judicialData }: Dashb
           includeFamiliares={includeFamiliares}
           onToggleFamiliares={() => setIncludeFamiliares(v => !v)}
           hiddenIds={hiddenIds}
-          onToggleVisibility={(cuit) => setHiddenIds(prev => { const next = new Set(prev); next.has(cuit) ? next.delete(cuit) : next.add(cuit); return next; })}
+          onToggleVisibility={(cuit) => setHiddenIds(prev => {
+            const next = new Set(prev);
+            if (next.has(cuit)) {
+              next.delete(cuit);
+            } else {
+              next.add(cuit);
+            }
+            return next;
+          })}
         />
       </div>
 
