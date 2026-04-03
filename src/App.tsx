@@ -1,6 +1,14 @@
 import { useMemo, useState, useEffect } from 'react';
 import Dashboard from './Dashboard';
+import PersonPage from './PersonPage';
 import type { DashboardData } from './types';
+import {
+  type LegislatorWithSlug,
+  formatMonthLabel,
+  getPersonSlugFromPath,
+  mergeDashboardPeople,
+  readEmbeddedPersonData,
+} from './people';
 
 function scrollToExplorer(behavior: ScrollBehavior = 'smooth') {
   const target = document.getElementById('explorador');
@@ -9,11 +17,19 @@ function scrollToExplorer(behavior: ScrollBehavior = 'smooth') {
 }
 
 export default function App() {
+  const personSlug = useMemo(() => getPersonSlugFromPath(window.location.pathname), []);
+  const [embeddedPerson] = useState<LegislatorWithSlug | null>(() => (
+    personSlug ? readEmbeddedPersonData() : null
+  ));
   const [dbData, setDbData] = useState<DashboardData | null>(null);
   const [politicosData, setPoliticosData] = useState<DashboardData | null>(null);
   const [judicialData, setJudicialData] = useState<DashboardData | null>(null);
+  const [person, setPerson] = useState<LegislatorWithSlug | null>(embeddedPerson);
+  const [personNotFound, setPersonNotFound] = useState(false);
 
   useEffect(() => {
+    if (personSlug && embeddedPerson) return;
+
     const params = new URLSearchParams(window.location.search);
     const hasPreselected = !!(params.get('funcionarios') || params.get('legisladores'));
 
@@ -22,6 +38,14 @@ export default function App() {
       fetch('/politicos_full.json').then(r => r.json()),
       fetch('/judicial_full.json').then(r => r.json()),
     ]).then(([db, pol, jud]) => {
+      if (personSlug) {
+        const merged = mergeDashboardPeople(db, pol, jud);
+        const found = merged.find((candidate) => candidate.slug === personSlug) || null;
+        setPerson(found);
+        setPersonNotFound(!found);
+        return;
+      }
+
       setDbData(db);
       setPoliticosData(pol);
       setJudicialData(jud);
@@ -29,26 +53,11 @@ export default function App() {
         requestAnimationFrame(() => scrollToExplorer('instant'));
       }
     });
-  }, []);
+  }, [embeddedPerson, personSlug]);
 
   const heroMetrics = useMemo(() => {
     if (!dbData || !politicosData || !judicialData) return null;
-    const rawLegisladores = dbData.data;
-    const rawPoliticos = politicosData.data;
-    const rawJudicial = judicialData.data;
-
-    const politicosByCuit = new Map(rawPoliticos.map((p) => [p.cuit, p]));
-    const merged = rawLegisladores.map((l) => {
-      const pol = politicosByCuit.get(l.cuit);
-      return pol ? { ...l, unidad: pol.unidad } : l;
-    });
-    const legCuits = new Set(rawLegisladores.map((l) => l.cuit));
-    const execCuits = new Set(rawPoliticos.map((p) => p.cuit));
-    const combined = [
-      ...merged,
-      ...rawPoliticos.filter((p) => !legCuits.has(p.cuit)),
-      ...rawJudicial.filter((j) => !legCuits.has(j.cuit) && !execCuits.has(j.cuit)),
-    ];
+    const combined = mergeDashboardPeople(dbData, politicosData, judicialData);
 
     let latestMonth = '';
 
@@ -64,21 +73,42 @@ export default function App() {
       });
     });
 
-    const [year, month] = latestMonth.split('-');
-    const monthNames = [
-      'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-    ];
-    const monthIndex = Number(month) - 1;
-    const latestMonthLabel = year && monthIndex >= 0 && monthIndex < 12
-      ? `${monthNames[monthIndex]} ${year}`
-      : latestMonth;
-
     return {
       funcionariosCount: combined.length,
-      latestMonthLabel,
+      latestMonthLabel: formatMonthLabel(latestMonth),
     };
   }, [dbData, politicosData, judicialData]);
+
+  if (personSlug) {
+    if (person) {
+      return <PersonPage person={person} />;
+    }
+
+    if (personNotFound) {
+      return (
+        <div className="flex min-h-screen items-center justify-center bg-gray-100 px-6">
+          <div className="max-w-xl rounded-xl border border-gray-200 bg-white p-8 text-center shadow-sm">
+            <h1 className="text-3xl font-black uppercase text-gray-950">Persona no encontrada</h1>
+            <p className="mt-3 text-sm leading-relaxed text-gray-600">
+              La URL no coincide con ninguna ficha generada. Volvé al explorador para buscar otra persona o abrir una comparativa.
+            </p>
+            <a
+              href="/"
+              className="mt-6 inline-flex rounded-lg bg-blue-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-blue-700"
+            >
+              Ir al inicio
+            </a>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gray-100">
+        <p className="text-gray-500">Cargando ficha…</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-100 text-gray-800">
