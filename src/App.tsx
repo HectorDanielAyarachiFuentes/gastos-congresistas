@@ -15,6 +15,7 @@ import {
   readEmbeddedPersonData,
   readEmbeddedPersonNavigation,
 } from './people';
+import { withBasePath } from './site';
 
 function scrollToExplorer(behavior: ScrollBehavior = 'smooth') {
   const target = document.getElementById('explorador');
@@ -49,9 +50,9 @@ export default function App() {
     const hasPreselected = !!(params.get('funcionarios') || params.get('legisladores'));
 
     Promise.all([
-      fetch('/legisladores_full.json').then(r => r.json()),
-      fetch('/politicos_full.json').then(r => r.json()),
-      fetch('/judicial_full.json').then(r => r.json()),
+      fetch(withBasePath('/legisladores_full.json')).then(r => r.json()),
+      fetch(withBasePath('/politicos_full.json')).then(r => r.json()),
+      fetch(withBasePath('/judicial_full.json')).then(r => r.json()),
     ]).then(([db, pol, jud]) => {
       const merged = mergeDashboardPeople(db, pol, jud);
 
@@ -115,7 +116,7 @@ export default function App() {
               La URL no coincide con ninguna ficha generada. Volvé al explorador para buscar otra persona o abrir una comparativa.
             </p>
             <a
-              href="/"
+              href={withBasePath("/")}
               className="mt-6 inline-flex rounded-lg bg-blue-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-blue-700"
             >
               Ir al inicio
@@ -189,7 +190,7 @@ export default function App() {
                 <span aria-hidden="true">↓</span>
               </button>
               <a
-                href="/personas/"
+                href={withBasePath("/personas/")}
                 className="inline-flex items-center gap-3 rounded-2xl border border-blue-200 bg-white px-6 py-4 text-sm font-bold uppercase tracking-wide text-blue-700 transition hover:border-blue-300 hover:bg-blue-50"
               >
                 Ver todas las fichas

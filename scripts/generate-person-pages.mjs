@@ -5,7 +5,15 @@ const ROOT = process.cwd();
 const DIST_DIR = path.join(ROOT, 'dist');
 const PUBLIC_DIR = path.join(ROOT, 'public');
 const SITE_URL = 'https://cuantodeben.visualizando.ar';
-const PEOPLE_DIRECTORY_PATH = '/personas/';
+const SITE_PATH_PREFIX = process.env.SITE_PATH_PREFIX || '/';
+
+function withSitePath(pathname) {
+  const base = SITE_PATH_PREFIX === '/' ? '/' : `/${SITE_PATH_PREFIX.replace(/^\/+|\/+$/g, '')}/`;
+  const normalizedPath = pathname.startsWith('/') ? pathname.slice(1) : pathname;
+  return `${base}${normalizedPath}`;
+}
+
+const PEOPLE_DIRECTORY_PATH = withSitePath('/personas/');
 
 function slugify(text) {
   return text
@@ -219,8 +227,8 @@ function buildFallbackBody(person, stats, description, navigation) {
         <p>${escapeHtml(description)}</p>
         <nav aria-label="Navegación entre fichas">
           <a href="${PEOPLE_DIRECTORY_PATH}">Ver directorio completo</a>
-          ${navigation.previous ? `<a href="/persona/${encodeURIComponent(navigation.previous.slug)}/">Ficha anterior: ${escapeHtml(navigation.previous.nombre)}</a>` : '<span>Primera ficha</span>'}
-          ${navigation.next ? `<a href="/persona/${encodeURIComponent(navigation.next.slug)}/">Ficha siguiente: ${escapeHtml(navigation.next.nombre)}</a>` : '<span>Última ficha</span>'}
+          ${navigation.previous ? `<a href="${withSitePath(`/persona/${encodeURIComponent(navigation.previous.slug)}/`)}">Ficha anterior: ${escapeHtml(navigation.previous.nombre)}</a>` : '<span>Primera ficha</span>'}
+          ${navigation.next ? `<a href="${withSitePath(`/persona/${encodeURIComponent(navigation.next.slug)}/`)}">Ficha siguiente: ${escapeHtml(navigation.next.nombre)}</a>` : '<span>Última ficha</span>'}
         </nav>
       </header>
       <section>
@@ -244,7 +252,7 @@ function buildFallbackBody(person, stats, description, navigation) {
           )).join('')}
         </ul>
       </section>
-      <p><a href="/?funcionarios=${encodeURIComponent(person.slug)}">Abrir ficha interactiva y compararla en el explorador</a></p>
+      <p><a href="${withSitePath(`/?funcionarios=${encodeURIComponent(person.slug)}`)}">Abrir ficha interactiva y compararla en el explorador</a></p>
     </article>
   `.trim();
 }
@@ -265,11 +273,11 @@ function buildPeopleDirectoryBody(entries, description) {
             const next = entries[index + 1];
             const context = getContextLine(entry) || getPowerLabel(entry);
             return `<li>
-              <a href="/persona/${encodeURIComponent(entry.slug)}/">${escapeHtml(entry.nombre)}</a>
+              <a href="${withSitePath(`/persona/${encodeURIComponent(entry.slug)}/`)}">${escapeHtml(entry.nombre)}</a>
               <p>${escapeHtml(context)}</p>
               <p>
-                ${previous ? `<a href="/persona/${encodeURIComponent(previous.slug)}/">Anterior: ${escapeHtml(previous.nombre)}</a>` : 'Inicio del listado'}
-                ${next ? ` · <a href="/persona/${encodeURIComponent(next.slug)}/">Siguiente: ${escapeHtml(next.nombre)}</a>` : ' · Fin del listado'}
+                ${previous ? `<a href="${withSitePath(`/persona/${encodeURIComponent(previous.slug)}/`)}">Anterior: ${escapeHtml(previous.nombre)}</a>` : 'Inicio del listado'}
+                ${next ? ` · <a href="${withSitePath(`/persona/${encodeURIComponent(next.slug)}/`)}">Siguiente: ${escapeHtml(next.nombre)}</a>` : ' · Fin del listado'}
               </p>
             </li>`;
           }).join('')}

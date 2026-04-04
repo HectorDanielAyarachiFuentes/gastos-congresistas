@@ -13,6 +13,7 @@ import {
   getPersonStats,
   getPowerLabel,
 } from './people';
+import { withBasePath } from './site';
 
 interface PersonPageProps {
   person: LegislatorWithSlug;
@@ -44,7 +45,7 @@ export default function PersonPage({ person, navigation }: PersonPageProps) {
           <div className="space-y-2">
             <div className="flex flex-wrap items-center gap-4 text-sm font-semibold text-blue-700">
               <a
-                href="/"
+                href={withBasePath("/")}
                 className="inline-flex items-center gap-2 underline-offset-4 hover:underline"
               >
                 <ArrowLeft size={16} />

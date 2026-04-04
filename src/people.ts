@@ -1,4 +1,5 @@
 import type { DashboardData, Legislator } from './types';
+import { withBasePath } from './site';
 
 export type LegislatorWithSlug = Legislator & { slug: string };
 
@@ -294,9 +295,9 @@ export function getPersonNavigation(entries: PersonDirectoryItem[], slug: string
 }
 
 export function getPersonRoute(slug: string) {
-  return `/persona/${slug}/`;
+  return withBasePath(`/persona/${slug}/`);
 }
 
 export function getPeopleDirectoryRoute() {
-  return '/personas/';
+  return withBasePath('/personas/');
 }

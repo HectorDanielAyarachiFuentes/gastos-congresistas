@@ -6,6 +6,7 @@ import {
   getPersonRoute,
   getPowerLabel,
 } from './people';
+import { withBasePath } from './site';
 
 interface PeopleDirectoryPageProps {
   entries: PersonDirectoryItem[];
@@ -18,7 +19,7 @@ export default function PeopleDirectoryPage({ entries }: PeopleDirectoryPageProp
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-6 py-5 md:flex-row md:items-end md:justify-between">
           <div className="space-y-2">
             <a
-              href="/"
+              href={withBasePath("/")}
               className="inline-flex items-center gap-2 text-sm font-semibold text-blue-700 underline-offset-4 hover:underline"
             >
               <ArrowLeft size={16} />
