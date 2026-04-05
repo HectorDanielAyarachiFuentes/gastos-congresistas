@@ -10,9 +10,8 @@ const app = (
   </StrictMode>
 )
 
-if (root.dataset.prerenderedApp === 'true' && root.hasChildNodes()) {
+if (root.hasChildNodes()) {
   hydrateRoot(root, app)
 } else {
-  root.innerHTML = ''
   createRoot(root).render(app)
 }

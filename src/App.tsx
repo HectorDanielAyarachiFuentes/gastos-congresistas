@@ -1,14 +1,20 @@
 import { useMemo, useState, useEffect } from 'react';
 import Dashboard from './Dashboard';
+import PeopleDirectoryPage from './PeopleDirectoryPage';
 import PersonPage from './PersonPage';
 import type { DashboardData } from './types';
 import {
   type LegislatorWithSlug,
+  type PersonDirectoryItem,
   formatMonthLabel,
+  getPeopleDirectoryEntries,
   getPersonSlugFromPath,
+  isPeopleDirectoryPath,
   mergeDashboardPeople,
+  readEmbeddedPeopleDirectory,
   readEmbeddedPersonData,
 } from './people';
+import { withBasePath } from './site';
 
 function scrollToExplorer(behavior: ScrollBehavior = 'smooth') {
   const target = document.getElementById('explorador');
@@ -25,31 +31,43 @@ export default function App({ initialPathname, initialSearch }: AppProps) {
   const pathname = initialPathname ?? (typeof window !== 'undefined' ? window.location.pathname : '/');
   const search = initialSearch ?? (typeof window !== 'undefined' ? window.location.search : '');
   const personSlug = useMemo(() => getPersonSlugFromPath(pathname), [pathname]);
+  const isPeopleDirectory = useMemo(() => isPeopleDirectoryPath(pathname), [pathname]);
   const [embeddedPerson] = useState<LegislatorWithSlug | null>(() => (
     personSlug ? readEmbeddedPersonData() : null
+  ));
+  const [embeddedPeopleDirectory] = useState<PersonDirectoryItem[] | null>(() => (
+    isPeopleDirectory ? readEmbeddedPeopleDirectory() : null
   ));
   const [dbData, setDbData] = useState<DashboardData | null>(null);
   const [politicosData, setPoliticosData] = useState<DashboardData | null>(null);
   const [judicialData, setJudicialData] = useState<DashboardData | null>(null);
+  const [peopleDirectory, setPeopleDirectory] = useState<PersonDirectoryItem[] | null>(embeddedPeopleDirectory);
   const [person, setPerson] = useState<LegislatorWithSlug | null>(embeddedPerson);
   const [personNotFound, setPersonNotFound] = useState(false);
 
   useEffect(() => {
     if (personSlug && embeddedPerson) return;
+    if (isPeopleDirectory && embeddedPeopleDirectory) return;
 
     const params = new URLSearchParams(search);
     const hasPreselected = !!(params.get('funcionarios') || params.get('legisladores'));
 
     Promise.all([
-      fetch('/legisladores_full.json').then(r => r.json()),
-      fetch('/politicos_full.json').then(r => r.json()),
-      fetch('/judicial_full.json').then(r => r.json()),
+      fetch(withBasePath('/legisladores_full.json')).then(r => r.json()),
+      fetch(withBasePath('/politicos_full.json')).then(r => r.json()),
+      fetch(withBasePath('/judicial_full.json')).then(r => r.json()),
     ]).then(([db, pol, jud]) => {
+      const merged = mergeDashboardPeople(db, pol, jud);
+
       if (personSlug) {
-        const merged = mergeDashboardPeople(db, pol, jud);
         const found = merged.find((candidate) => candidate.slug === personSlug) || null;
         setPerson(found);
         setPersonNotFound(!found);
+        return;
+      }
+
+      if (isPeopleDirectory) {
+        setPeopleDirectory(getPeopleDirectoryEntries(merged));
         return;
       }
 
@@ -60,7 +78,7 @@ export default function App({ initialPathname, initialSearch }: AppProps) {
         requestAnimationFrame(() => scrollToExplorer('instant'));
       }
     });
-  }, [embeddedPerson, personSlug, search]);
+  }, [embeddedPeopleDirectory, embeddedPerson, isPeopleDirectory, personSlug, search]);
 
   const heroMetrics = useMemo(() => {
     if (!dbData || !politicosData || !judicialData) return null;
@@ -100,7 +118,7 @@ export default function App({ initialPathname, initialSearch }: AppProps) {
               La URL no coincide con ninguna ficha generada. Volvé al explorador para buscar otra persona o abrir una comparativa.
             </p>
             <a
-              href="/"
+              href={withBasePath("/")}
               className="mt-6 inline-flex rounded-lg bg-blue-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-blue-700"
             >
               Ir al inicio
@@ -113,6 +131,18 @@ export default function App({ initialPathname, initialSearch }: AppProps) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-100">
         <p className="text-gray-500">Cargando ficha…</p>
+      </div>
+    );
+  }
+
+  if (isPeopleDirectory) {
+    if (peopleDirectory) {
+      return <PeopleDirectoryPage entries={peopleDirectory} />;
+    }
+
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gray-100">
+        <p className="text-gray-500">Cargando directorio…</p>
       </div>
     );
   }
@@ -153,7 +183,7 @@ export default function App({ initialPathname, initialSearch }: AppProps) {
               </div>
             </div>
 
-            <div>
+            <div className="flex flex-wrap gap-3">
               <button
                 onClick={() => scrollToExplorer()}
                 className="inline-flex items-center gap-3 rounded-2xl bg-blue-600 px-6 py-4 text-sm font-bold uppercase tracking-wide text-white transition hover:bg-blue-700"
@@ -161,6 +191,12 @@ export default function App({ initialPathname, initialSearch }: AppProps) {
                 Bajar al explorador
                 <span aria-hidden="true">↓</span>
               </button>
+              <a
+                href={withBasePath("/personas/")}
+                className="inline-flex items-center gap-3 rounded-2xl border border-blue-200 bg-white px-6 py-4 text-sm font-bold uppercase tracking-wide text-blue-700 transition hover:border-blue-300 hover:bg-blue-50"
+              >
+                Ver todas las fichas
+              </a>
             </div>
           </div>
         </section>

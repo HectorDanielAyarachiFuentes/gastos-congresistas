@@ -1,4 +1,5 @@
 import type { DashboardData, Legislator } from './types';
+import { stripBasePath, withBasePath } from './site';
 
 export type LegislatorWithSlug = Legislator & { slug: string };
 
@@ -23,6 +24,18 @@ export interface PersonStats {
   familiaresCount: number;
   latestSituation: number | null;
   latestVariationPct: number | null;
+}
+
+export interface PersonDirectoryItem {
+  slug: string;
+  nombre: string;
+  cargo?: string;
+  distrito?: string;
+  partido?: string;
+  unidad?: string;
+  camara?: string;
+  organo?: string;
+  poder?: Legislator['poder'];
 }
 
 export const SITE_URL = 'https://cuantodeben.visualizando.ar';
@@ -84,20 +97,35 @@ export function mergeDashboardPeople(
 }
 
 export function getPersonSlugFromPath(pathname: string) {
-  const normalized = pathname.replace(/\/+$/, '') || '/';
-  const match = normalized.match(/^\/persona\/([^/]+)$/);
+  const normalized = stripBasePath(pathname).replace(/\/+$/, '') || '/';
+  const match = normalized.match(/^\/personas\/([^/]+)$/);
   return match?.[1] ?? null;
 }
 
-export function readEmbeddedPersonData() {
-  const node = document.getElementById('person-page-data');
+export function isPeopleDirectoryPath(pathname: string) {
+  const normalized = stripBasePath(pathname).replace(/\/+$/, '') || '/';
+  return normalized === '/personas';
+}
+
+function readEmbeddedJson<T>(id: string) {
+  if (typeof document === 'undefined') return null;
+
+  const node = document.getElementById(id);
   if (!node?.textContent) return null;
 
   try {
-    return JSON.parse(node.textContent) as LegislatorWithSlug;
+    return JSON.parse(node.textContent) as T;
   } catch {
     return null;
   }
+}
+
+export function readEmbeddedPersonData() {
+  return readEmbeddedJson<LegislatorWithSlug>('person-page-data');
+}
+
+export function readEmbeddedPeopleDirectory() {
+  return readEmbeddedJson<PersonDirectoryItem[]>('people-directory-data');
 }
 
 export function formatMonthLabel(value: string | null) {
@@ -195,7 +223,7 @@ export function getPersonStats(legislator: Legislator): PersonStats {
   };
 }
 
-export function getPowerLabel(legislator: Legislator) {
+export function getPowerLabel(legislator: { poder?: Legislator['poder'] }) {
   switch (legislator.poder) {
     case 'legislativo':
       return 'Poder Legislativo';
@@ -208,6 +236,38 @@ export function getPowerLabel(legislator: Legislator) {
   }
 }
 
+export function getPersonContextLine(person: Pick<PersonDirectoryItem, 'cargo' | 'distrito' | 'partido' | 'unidad' | 'camara' | 'organo'>) {
+  const parts = [person.cargo];
+
+  if (person.distrito) parts.push(person.distrito);
+  if (person.partido) parts.push(person.partido);
+  if (person.unidad) parts.push(person.unidad);
+  if (person.camara) parts.push(person.camara);
+  if (person.organo) parts.push(person.organo);
+
+  return parts.filter(Boolean).join(' · ');
+}
+
+
+export function getPeopleDirectoryEntries(people: LegislatorWithSlug[]): PersonDirectoryItem[] {
+  return [...people]
+    .sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }))
+    .map((person) => ({
+      slug: person.slug,
+      nombre: person.nombre,
+      cargo: person.cargo,
+      distrito: person.distrito,
+      partido: person.partido,
+      unidad: person.unidad,
+      camara: person.camara,
+      organo: person.organo,
+      poder: person.poder,
+    }));
+}
 export function getPersonRoute(slug: string) {
-  return `/persona/${slug}/`;
+  return withBasePath(`/personas/${slug}/`);
+}
+
+export function getPeopleDirectoryRoute() {
+  return withBasePath('/personas/');
 }

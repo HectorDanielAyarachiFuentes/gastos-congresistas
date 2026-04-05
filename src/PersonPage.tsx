@@ -6,25 +6,16 @@ import {
   formatCompactMoneyArs,
   formatMoneyArs,
   formatMonthLabel,
+  getPeopleDirectoryRoute,
+  getPersonContextLine,
   getPersonRoute,
   getPersonStats,
   getPowerLabel,
 } from './people';
+import { withBasePath } from './site';
 
 interface PersonPageProps {
   person: LegislatorWithSlug;
-}
-
-function getContextLine(person: LegislatorWithSlug) {
-  const parts = [person.cargo];
-
-  if (person.distrito) parts.push(person.distrito);
-  if (person.partido) parts.push(person.partido);
-  if (person.unidad) parts.push(person.unidad);
-  if (person.camara) parts.push(person.camara);
-  if (person.organo) parts.push(person.organo);
-
-  return parts.filter(Boolean).join(' · ');
 }
 
 function getSummary(person: LegislatorWithSlug) {
@@ -41,7 +32,7 @@ function getSummary(person: LegislatorWithSlug) {
 
 export default function PersonPage({ person }: PersonPageProps) {
   const stats = getPersonStats(person);
-  const contextLine = getContextLine(person);
+  const contextLine = getPersonContextLine(person);
   const situation = stats.latestSituation != null ? SITUACION_BCRA[stats.latestSituation] : null;
   const latestRows = [...stats.monthlySeries].slice(-12).reverse();
 
@@ -50,13 +41,21 @@ export default function PersonPage({ person }: PersonPageProps) {
       <header className="border-b border-gray-200 bg-white">
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-6 py-5 md:flex-row md:items-center md:justify-between">
           <div className="space-y-2">
-            <a
-              href="/"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-blue-700 underline-offset-4 hover:underline"
-            >
-              <ArrowLeft size={16} />
-              Volver al explorador
-            </a>
+            <div className="flex flex-wrap items-center gap-4 text-sm font-semibold text-blue-700">
+              <a
+                href={withBasePath("/")}
+                className="inline-flex items-center gap-2 underline-offset-4 hover:underline"
+              >
+                <ArrowLeft size={16} />
+                Volver al explorador
+              </a>
+              <a
+                href={getPeopleDirectoryRoute()}
+                className="underline-offset-4 hover:underline"
+              >
+                Ver directorio completo
+              </a>
+            </div>
             <div className="space-y-2">
               <h1 className="text-3xl font-black uppercase tracking-tight text-gray-950 md:text-5xl">
                 {person.nombre}
@@ -85,7 +84,7 @@ export default function PersonPage({ person }: PersonPageProps) {
               </span>
             )}
             <a
-              href={`/?funcionarios=${person.slug}`}
+              href={withBasePath(`/?funcionarios=${person.slug}`)}
               className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-blue-700"
             >
               Abrir comparativa
