@@ -26,16 +26,6 @@ export interface PersonStats {
   latestVariationPct: number | null;
 }
 
-export interface PersonNavigationLink {
-  slug: string;
-  nombre: string;
-}
-
-export interface PersonNavigation {
-  previous: PersonNavigationLink | null;
-  next: PersonNavigationLink | null;
-}
-
 export interface PersonDirectoryItem {
   slug: string;
   nombre: string;
@@ -108,7 +98,7 @@ export function mergeDashboardPeople(
 
 export function getPersonSlugFromPath(pathname: string) {
   const normalized = stripBasePath(pathname).replace(/\/+$/, '') || '/';
-  const match = normalized.match(/^\/persona\/([^/]+)$/);
+  const match = normalized.match(/^\/personas\/([^/]+)$/);
   return match?.[1] ?? null;
 }
 
@@ -130,10 +120,6 @@ function readEmbeddedJson<T>(id: string) {
 
 export function readEmbeddedPersonData() {
   return readEmbeddedJson<LegislatorWithSlug>('person-page-data');
-}
-
-export function readEmbeddedPersonNavigation() {
-  return readEmbeddedJson<PersonNavigation>('person-page-navigation');
 }
 
 export function readEmbeddedPeopleDirectory() {
@@ -276,26 +262,8 @@ export function getPeopleDirectoryEntries(people: LegislatorWithSlug[]): PersonD
       poder: person.poder,
     }));
 }
-
-export function getPersonNavigation(entries: PersonDirectoryItem[], slug: string): PersonNavigation {
-  const index = entries.findIndex((entry) => entry.slug === slug);
-
-  if (index === -1) {
-    return { previous: null, next: null };
-  }
-
-  const toLink = (entry: PersonDirectoryItem | undefined): PersonNavigationLink | null => (
-    entry ? { slug: entry.slug, nombre: entry.nombre } : null
-  );
-
-  return {
-    previous: toLink(entries[index - 1]),
-    next: toLink(entries[index + 1]),
-  };
-}
-
 export function getPersonRoute(slug: string) {
-  return withBasePath(`/persona/${slug}/`);
+  return withBasePath(`/personas/${slug}/`);
 }
 
 export function getPeopleDirectoryRoute() {

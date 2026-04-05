@@ -213,7 +213,7 @@ function buildPeopleDirectoryDescription(count) {
   return `Listado alfabético de ${count.toLocaleString('es-AR')} funcionarios, legisladores y miembros del Poder Judicial con ficha pública y enlaces internos.`;
 }
 
-function buildFallbackBody(person, stats, description, navigation) {
+function buildFallbackBody(person, stats, description) {
   const latestRows = [...stats.monthlySeries].slice(-6).reverse();
   const latestVariation = stats.latestVariationPct == null
     ? 'Sin variación comparable contra el mes anterior.'
@@ -225,11 +225,7 @@ function buildFallbackBody(person, stats, description, navigation) {
         <p>${escapeHtml(getPowerLabel(person))}</p>
         <h1>${escapeHtml(person.nombre)}</h1>
         <p>${escapeHtml(description)}</p>
-        <nav aria-label="Navegación entre fichas">
-          <a href="${PEOPLE_DIRECTORY_PATH}">Ver directorio completo</a>
-          ${navigation.previous ? `<a href="${withSitePath(`/persona/${encodeURIComponent(navigation.previous.slug)}/`)}">Ficha anterior: ${escapeHtml(navigation.previous.nombre)}</a>` : '<span>Primera ficha</span>'}
-          ${navigation.next ? `<a href="${withSitePath(`/persona/${encodeURIComponent(navigation.next.slug)}/`)}">Ficha siguiente: ${escapeHtml(navigation.next.nombre)}</a>` : '<span>Última ficha</span>'}
-        </nav>
+        <p><a href="${PEOPLE_DIRECTORY_PATH}">Ver directorio completo</a></p>
       </header>
       <section>
         <h2>Estadísticas</h2>
@@ -271,14 +267,14 @@ function buildPeopleDirectoryBody(entries, description) {
           ${entries.map((entry) => {
             const context = getContextLine(entry) || getPowerLabel(entry);
             return `<li>
-              <a href="${withSitePath(`/persona/${encodeURIComponent(entry.slug)}/`)}">${escapeHtml(entry.nombre)}</a>
+              <a href="${withSitePath(`/personas/${encodeURIComponent(entry.slug)}/`)}">${escapeHtml(entry.nombre)}</a>
               <p>${escapeHtml(context)}</p>
             </li>`;
           }).join('')}
         </ul>
       </section>
       <footer>
-        <p>Cada ficha individual mantiene enlaces a la persona anterior y siguiente para mejorar la navegación interna, pero este directorio muestra solo el listado completo para evitar redundancia.</p>
+        <p>El directorio muestra el listado completo y cada ficha individual conserva su resumen público y el acceso a la comparativa interactiva.</p>
       </footer>
     </article>
   `.trim();
@@ -357,7 +353,7 @@ function buildPeopleDirectoryStructuredData(entries, canonicalUrl, title, descri
           itemListElement: entries.map((entry, index) => ({
             '@type': 'ListItem',
             position: index + 1,
-            url: `${SITE_URL}/persona/${entry.slug}/`,
+            url: `${SITE_URL}/personas/${entry.slug}/`,
             name: entry.nombre,
           })),
         },
@@ -382,14 +378,6 @@ function buildDirectoryEntries(people) {
       organo: person.organo,
       poder: person.poder,
     }));
-}
-
-function buildNavigation(entries, slug) {
-  const index = entries.findIndex((entry) => entry.slug === slug);
-  return {
-    previous: index > 0 ? { slug: entries[index - 1].slug, nombre: entries[index - 1].nombre } : null,
-    next: index >= 0 && index < entries.length - 1 ? { slug: entries[index + 1].slug, nombre: entries[index + 1].nombre } : null,
-  };
 }
 
 async function writeHtmlPage({
@@ -472,16 +460,15 @@ async function main() {
 
   for (const person of people) {
     const stats = getPersonStats(person);
-    const routePath = `/persona/${person.slug}/`;
+    const routePath = `/personas/${person.slug}/`;
     const canonicalUrl = `${SITE_URL}${routePath}`;
     const title = `${person.nombre} | Deuda BCRA y estadísticas`;
     const description = buildDescription(person, stats);
     const structuredData = buildStructuredData(person, canonicalUrl, title, description);
-    const navigation = buildNavigation(directoryEntries, person.slug);
-    const fallbackBody = buildFallbackBody(person, stats, description, navigation);
-    const extraScripts = `\n    <script id="person-page-data" type="application/json">${escapeJson(person)}</script>\n    <script id="person-page-navigation" type="application/json">${escapeJson(navigation)}</script>`;
+    const fallbackBody = buildFallbackBody(person, stats, description);
+    const extraScripts = `\n    <script id="person-page-data" type="application/json">${escapeJson(person)}</script>`;
 
-    const outDir = path.join(DIST_DIR, 'persona', person.slug);
+    const outDir = path.join(DIST_DIR, 'personas', person.slug);
     await writeHtmlPage({
       template,
       outDir,

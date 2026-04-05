@@ -13,7 +13,6 @@ import {
   mergeDashboardPeople,
   readEmbeddedPeopleDirectory,
   readEmbeddedPersonData,
-  readEmbeddedPersonNavigation,
 } from './people';
 import { withBasePath } from './site';
 
@@ -35,9 +34,6 @@ export default function App({ initialPathname, initialSearch }: AppProps) {
   const isPeopleDirectory = useMemo(() => isPeopleDirectoryPath(pathname), [pathname]);
   const [embeddedPerson] = useState<LegislatorWithSlug | null>(() => (
     personSlug ? readEmbeddedPersonData() : null
-  ));
-  const [embeddedNavigation] = useState(() => (
-    personSlug ? readEmbeddedPersonNavigation() : null
   ));
   const [embeddedPeopleDirectory] = useState<PersonDirectoryItem[] | null>(() => (
     isPeopleDirectory ? readEmbeddedPeopleDirectory() : null
@@ -110,8 +106,7 @@ export default function App({ initialPathname, initialSearch }: AppProps) {
 
   if (personSlug) {
     if (person) {
-      const navigation = embeddedNavigation ?? { previous: null, next: null };
-      return <PersonPage person={person} navigation={navigation} />;
+      return <PersonPage person={person} />;
     }
 
     if (personNotFound) {

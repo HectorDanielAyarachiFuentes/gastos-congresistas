@@ -1,9 +1,8 @@
-import { ArrowLeft, Building2, ChevronLeft, ChevronRight, CircleAlert, FileBarChart2, Home, Landmark, ShieldAlert, Users } from 'lucide-react';
+import { ArrowLeft, Building2, CircleAlert, FileBarChart2, Home, Landmark, ShieldAlert, Users } from 'lucide-react';
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { SITUACION_BCRA } from './LegislatorSelector';
 import {
   type LegislatorWithSlug,
-  type PersonNavigation,
   formatCompactMoneyArs,
   formatMoneyArs,
   formatMonthLabel,
@@ -17,7 +16,6 @@ import { withBasePath } from './site';
 
 interface PersonPageProps {
   person: LegislatorWithSlug;
-  navigation: PersonNavigation | null;
 }
 
 function getSummary(person: LegislatorWithSlug) {
@@ -32,7 +30,7 @@ function getSummary(person: LegislatorWithSlug) {
   return `${latest} y ${peak}. La serie cubre ${stats.monthsWithDebt} meses reportados por el BCRA.`;
 }
 
-export default function PersonPage({ person, navigation }: PersonPageProps) {
+export default function PersonPage({ person }: PersonPageProps) {
   const stats = getPersonStats(person);
   const contextLine = getPersonContextLine(person);
   const situation = stats.latestSituation != null ? SITUACION_BCRA[stats.latestSituation] : null;
@@ -96,48 +94,6 @@ export default function PersonPage({ person, navigation }: PersonPageProps) {
       </header>
 
       <main className="mx-auto grid w-full max-w-6xl gap-6 px-6 py-8">
-        <nav aria-label="Navegación entre fichas" className="rounded-xl border border-gray-200 bg-white p-4">
-          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Navegación interna</p>
-              <p className="mt-1 text-sm text-gray-600">
-                Ahrefs marcaba las fichas como huérfanas. Ahora cada persona enlaza al directorio y a las fichas vecinas.
-              </p>
-            </div>
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-              {navigation?.previous ? (
-                <a
-                  href={getPersonRoute(navigation.previous.slug)}
-                  className="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-3 py-2 text-sm font-semibold text-gray-700 transition hover:border-blue-300 hover:text-blue-700"
-                >
-                  <ChevronLeft size={16} />
-                  {navigation.previous.nombre}
-                </a>
-              ) : (
-                <span className="inline-flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-sm font-semibold text-gray-400">
-                  <ChevronLeft size={16} />
-                  Primera ficha
-                </span>
-              )}
-
-              {navigation?.next ? (
-                <a
-                  href={getPersonRoute(navigation.next.slug)}
-                  className="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-3 py-2 text-sm font-semibold text-gray-700 transition hover:border-blue-300 hover:text-blue-700"
-                >
-                  {navigation.next.nombre}
-                  <ChevronRight size={16} />
-                </a>
-              ) : (
-                <span className="inline-flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-sm font-semibold text-gray-400">
-                  Última ficha
-                  <ChevronRight size={16} />
-                </span>
-              )}
-            </div>
-          </div>
-        </nav>
-
         <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           <article className="rounded-xl border border-gray-200 bg-white p-4">
             <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Último mes</p>
