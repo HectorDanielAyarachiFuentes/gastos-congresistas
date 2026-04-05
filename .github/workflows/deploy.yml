@@ -34,6 +34,7 @@ jobs:
       - name: Build
         env:
           GITHUB_PAGES_BASE: ${{ github.repository == 'seppo0010/gastos-congresistas' && '/' || format('/{0}/', github.event.repository.name) }}
+          SITE_PATH_PREFIX: ${{ github.repository == 'seppo0010/gastos-congresistas' && '/' || format('/{0}/', github.event.repository.name) }}
         run: npm run build
       - name: Remove production CNAME on forks
         if: github.repository != 'seppo0010/gastos-congresistas'
