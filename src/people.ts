@@ -108,6 +108,8 @@ export function isPeopleDirectoryPath(pathname: string) {
 }
 
 function readEmbeddedJson<T>(id: string) {
+  if (typeof document === 'undefined') return null;
+
   const node = document.getElementById(id);
   if (!node?.textContent) return null;
 

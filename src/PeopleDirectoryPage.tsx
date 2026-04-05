@@ -1,7 +1,6 @@
 import { ArrowLeft } from "lucide-react";
 import {
   type PersonDirectoryItem,
-  getPeopleDirectoryRoute,
   getPersonContextLine,
   getPersonRoute,
   getPowerLabel,
