@@ -44,11 +44,7 @@ export default function Dashboard({ dbData, politicosData, judicialData }: Dashb
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [copied, setCopied] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
-  const [showDisclaimer, setShowDisclaimer] = useState(() => {
-    const accepted = localStorage.getItem('disclaimer-accepted');
-    if (!accepted) return true;
-    return Date.now() - Number(accepted) > 24 * 60 * 60 * 1000;
-  });
+  const [showDisclaimer, setShowDisclaimer] = useState(true);
   const debtChartRef = useRef<{ getChartElement: () => HTMLDivElement | null; openExportMenu: () => void }>(null);
 
   useEffect(() => {
@@ -245,7 +241,7 @@ export default function Dashboard({ dbData, politicosData, judicialData }: Dashb
               Los datos pueden tener errores o estar desactualizados, y su interpretación requiere contexto. Se recomienda no sacar conclusiones apresuradas y chequear con otras fuentes.
             </p>
             <button
-              onClick={() => { localStorage.setItem('disclaimer-accepted', String(Date.now())); setShowDisclaimer(false); }}
+              onClick={() => setShowDisclaimer(false)}
               className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition-colors"
             >
               Entendido
