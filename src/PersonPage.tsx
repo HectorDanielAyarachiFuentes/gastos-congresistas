@@ -233,8 +233,8 @@ export default function PersonPage({ person }: PersonPageProps) {
               <div className="flex items-start gap-3">
                 <Home size={16} className="mt-0.5 shrink-0 text-blue-700" />
                 <div>
-                  <p className="font-semibold text-gray-900">Garantía preferida</p>
-                  <p>{person.hipoteca_bcra.tiene ? 'Sí, figura con garantía preferida según BCRA.' : 'No figura con garantía preferida en el BCRA.'}</p>
+                  <p className="font-semibold text-gray-900">Preferido (hipoteca, prenda, etc.)</p>
+                  <p>{person.hipoteca_bcra.tiene ? 'Sí, figura con preferido (hipoteca, prenda, etc.) según BCRA.' : 'No figura con preferido (hipoteca, prenda, etc.) en el BCRA.'}</p>
                 </div>
               </div>
 

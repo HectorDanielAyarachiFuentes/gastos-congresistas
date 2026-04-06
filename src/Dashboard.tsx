@@ -44,6 +44,11 @@ export default function Dashboard({ dbData, politicosData, judicialData }: Dashb
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [copied, setCopied] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
+  const [showDisclaimer, setShowDisclaimer] = useState(() => {
+    const accepted = localStorage.getItem('disclaimer-accepted');
+    if (!accepted) return true;
+    return Date.now() - Number(accepted) > 24 * 60 * 60 * 1000;
+  });
   const debtChartRef = useRef<{ getChartElement: () => HTMLDivElement | null; openExportMenu: () => void }>(null);
 
   useEffect(() => {
@@ -217,6 +222,35 @@ export default function Dashboard({ dbData, politicosData, judicialData }: Dashb
       {warning && (
         <div className="absolute top-5 right-5 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded shadow-lg z-50">
             {warning}
+        </div>
+      )}
+
+      {showDisclaimer && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white p-6 rounded-lg shadow-xl max-w-md relative">
+            <h3 className="font-bold text-lg mb-3">Aviso</h3>
+            <p className="text-sm text-gray-700 mb-4">
+              Todo lo que aparece aquí son <strong>datos públicos</strong> obtenidos de la{' '}
+              <a
+                href="https://www3.bcra.gob.ar/ChequesDeudoresMFT/Deudores"
+                target="_blank"
+                rel="nofollow noreferrer"
+                className="text-blue-600 hover:underline"
+              >
+                Central de Deudores del BCRA
+              </a>
+              . Este sitio solo los muestra de forma más clara.
+            </p>
+            <p className="text-sm text-gray-700 mb-5">
+              Los datos pueden tener errores o estar desactualizados, y su interpretación requiere contexto. Se recomienda no sacar conclusiones apresuradas y chequear con otras fuentes.
+            </p>
+            <button
+              onClick={() => { localStorage.setItem('disclaimer-accepted', String(Date.now())); setShowDisclaimer(false); }}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition-colors"
+            >
+              Entendido
+            </button>
+          </div>
         </div>
       )}
 

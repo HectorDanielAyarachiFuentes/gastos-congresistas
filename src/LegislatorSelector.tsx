@@ -255,7 +255,7 @@ export default function LegislatorSelector({
           <div className="grid grid-cols-2 gap-2">
             <div>
               <label htmlFor="credit" className="block text-gray-600 text-xs font-semibold mb-1 flex gap-1">
-                <span title="Garantía preferida (hipoteca/prenda)" className="flex"><Home size={14} className="text-green-600" /></span>
+                <span title="Preferido (hipoteca, prenda, etc.)" className="flex"><Home size={14} className="text-green-600" /></span>
                 Garantía†
               </label>
               <select id="credit" value={creditFilter} onChange={e => { posthog?.capture('filter_applied', { filter: 'garantia', value: e.target.value }); setCreditFilter(e.target.value); }} className="w-full p-2 border rounded bg-white">
@@ -302,7 +302,7 @@ export default function LegislatorSelector({
             </div>
           </div>
           <p className="text-[10px] text-gray-500 leading-tight space-y-0.5">
-            {garantiaFecha && <span className="block">† Garantía al {garantiaFecha} (hipoteca/prenda según BCRA).</span>}
+            {garantiaFecha && <span className="block">† Preferido (hipoteca, prenda, etc.) al {garantiaFecha} según BCRA.</span>}
             <span className="block">* Cambio de nivel: heurística inferida a partir de los montos.</span>
           </p>
           <button
@@ -354,7 +354,7 @@ export default function LegislatorSelector({
                       </span>
                     )}
                     {l.hipoteca_bcra.tiene && (
-                      <div title="Tiene garantía preferida (hipoteca/prenda) registrada en el BCRA." className="shrink-0 flex">
+                      <div title="Tiene preferido (hipoteca, prenda, etc.) registrado en el BCRA." className="shrink-0 flex">
                         <Home size={14} className="text-green-600" />
                       </div>
                     )}
