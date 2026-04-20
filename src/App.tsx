@@ -10,7 +10,6 @@ import {
   formatMoneyArs,
   getPeopleDirectoryEntries,
   getPersonSlugFromPath,
-  getPersonStats,
   isPeopleDirectoryPath,
   mergeDashboardPeople,
   readEmbeddedPeopleDirectory,
