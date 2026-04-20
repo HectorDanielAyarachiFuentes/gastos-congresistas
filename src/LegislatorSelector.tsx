@@ -51,7 +51,7 @@ export default function LegislatorSelector({
 }: LegislatorSelectorProps) {
   const posthog = usePostHog();
   const [searchTerm, setSearchTerm] = useState("");
-  const [filtersExpanded, setFiltersExpanded] = useState(false);
+  const [filtersExpanded, setFiltersExpanded] = useState(true);
   const [resultsExpanded, setResultsExpanded] = useState(false);
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [positionFilter, setPositionFilter] = useState("todos");
