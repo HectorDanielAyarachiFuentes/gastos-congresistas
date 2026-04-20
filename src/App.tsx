@@ -512,7 +512,7 @@ export default function App({ initialPathname, initialSearch }: AppProps) {
               <div className="overflow-y-auto flex-1 space-y-2 pr-2">
                 {heroMetrics.fullRanking
                   .filter(item => item.person.distrito === selectedProvincia)
-                  .map((item, i) => (
+                  .map((item) => (
                     <div key={item.person.cuit} className="flex justify-between items-center p-3 bg-gray-50 rounded-xl border border-gray-100 cursor-pointer hover:border-blue-300 hover:bg-blue-50 transition-colors group" onClick={() => window.location.href = withBasePath(`/personas/${item.person.slug}`)}>
                       <div className="min-w-0 pr-3">
                         <p className="font-bold text-gray-900 text-sm truncate group-hover:text-blue-800 transition-colors">{item.person.nombre}</p>
