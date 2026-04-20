@@ -225,11 +225,11 @@ export default function App({ initialPathname, initialSearch }: AppProps) {
     <div className="h-screen w-full bg-gray-50 flex flex-col overflow-hidden font-sans text-gray-800">
       {/* Navbar with Glassmorphism */}
       <header className="flex-none bg-white/70 backdrop-blur-md border-b border-gray-200 z-50 px-4 md:px-6 h-16 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-sky-400 flex items-center justify-center text-white font-bold text-sm shadow-md">
+        <div className="flex items-center gap-2 cursor-pointer group" onClick={() => setActiveTab('resumen')}>
+          <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-sky-400 flex items-center justify-center text-white font-bold text-sm shadow-md transition-transform duration-300 group-hover:scale-105">
             CD
           </div>
-          <h1 className="font-black text-lg tracking-tight text-gray-900 hidden sm:block">¿CUÁNTO DEBEN?</h1>
+          <h1 className="font-black text-lg tracking-tight text-gray-900 hidden sm:block group-hover:text-blue-600 transition-colors duration-300">¿CUÁNTO DEBEN?</h1>
         </div>
         
         <nav className="flex items-center gap-1 bg-gray-100/50 p-1 rounded-xl border border-gray-200/50">
@@ -432,7 +432,7 @@ export default function App({ initialPathname, initialSearch }: AppProps) {
 
         {/* Explorador Tab */}
         {activeTab === 'explorador' && (
-          <div className="absolute inset-0 animate-in fade-in duration-300 bg-gray-100">
+          <div className="absolute inset-0 animate-in fade-in slide-in-from-bottom-4 duration-500 bg-gray-100">
             {dbData && politicosData && judicialData ? (
               <Dashboard dbData={dbData} politicosData={politicosData} judicialData={judicialData} />
             ) : (
@@ -445,7 +445,7 @@ export default function App({ initialPathname, initialSearch }: AppProps) {
 
         {/* Acerca Tab */}
         {activeTab === 'acerca' && (
-          <div className="absolute inset-0 overflow-y-auto bg-gray-50 animate-in fade-in duration-500">
+          <div className="absolute inset-0 overflow-y-auto bg-gray-50 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="max-w-3xl mx-auto px-6 py-12">
               <div className="bg-white rounded-3xl shadow-sm border border-gray-200 p-8 md:p-12 space-y-8">
                 <div>
