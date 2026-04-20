@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { X, Database, Calendar, AlertTriangle, Trophy, Wallet, Users, MapPin } from 'lucide-react';
 import Dashboard from './Dashboard';
 import PeopleDirectoryPage from './PeopleDirectoryPage';
 import PersonPage from './PersonPage';
@@ -270,76 +270,81 @@ export default function App({ initialPathname, initialSearch }: AppProps) {
         {activeTab === 'resumen' && (
           <div className="absolute inset-0 overflow-y-auto bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-50/50 via-white to-gray-50 animate-in fade-in duration-500">
             <div className="max-w-5xl mx-auto px-6 py-8 md:py-16 flex flex-col justify-center min-h-full">
-              <div className="max-w-3xl space-y-6">
-                <span className="inline-flex items-center gap-2 rounded-full border border-blue-200/60 bg-blue-50/50 px-4 py-1.5 text-xs font-semibold tracking-widest text-blue-700 backdrop-blur-sm">
-                  <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
-                  DATOS OFICIALES BCRA
-                </span>
-                
-                <h2 className="text-4xl md:text-6xl font-black tracking-tight text-gray-900 leading-[1.1]">
-                  Visualizador de <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-sky-400">Deuda Pública</span>
-                </h2>
-                
-                <p className="text-lg text-gray-600 max-w-2xl leading-relaxed">
-                  Explora la evolución mensual de deuda reportada para figuras públicas argentinas, con ajustes en pesos constantes o en dólares. Incluye funcionarios, legisladores y sus familiares.
-                </p>
+              <div className="w-full space-y-8 flex flex-col items-center">
+                <div className="max-w-3xl text-center space-y-6 flex flex-col items-center">
+                  <span className="inline-flex items-center gap-2 rounded-full border border-blue-200/60 bg-white/60 px-4 py-1.5 text-xs font-semibold tracking-widest text-blue-700 backdrop-blur-md shadow-sm">
+                    <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+                    DATOS OFICIALES BCRA
+                  </span>
+                  
+                  <h2 className="text-4xl md:text-6xl font-black tracking-tight text-gray-900 leading-[1.1]">
+                    Visualizador de <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-500">Deuda Pública</span>
+                  </h2>
+                  
+                  <p className="text-lg text-gray-600 max-w-2xl leading-relaxed">
+                    Explora la evolución mensual de deuda reportada para figuras públicas argentinas, con ajustes en pesos constantes o en dólares. Incluye funcionarios, legisladores y sus familiares.
+                  </p>
+                </div>
                 
                 {/* Modern Metrics Grid */}
-                <div className="grid grid-cols-2 md:grid-cols-6 gap-4 pt-4">
+                <div className="grid grid-cols-2 md:grid-cols-6 gap-5 pt-4 w-full">
                   
                   {/* Basic Stats */}
-                  <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 col-span-2 md:col-span-2 rounded-2xl bg-white/60 backdrop-blur-xl border border-gray-200/60 p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between" style={{ animationDelay: '100ms', animationFillMode: 'both' }}>
+                  <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 col-span-2 md:col-span-2 rounded-3xl bg-white/70 backdrop-blur-xl border border-white/60 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all flex flex-col justify-between" style={{ animationDelay: '100ms', animationFillMode: 'both' }}>
                     <div>
-                      <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">Base de Datos</p>
-                      <p className="mt-2 text-2xl font-black text-gray-900">{heroMetrics ? heroMetrics.funcionariosCount.toLocaleString('es-AR') : '…'} <span className="text-sm font-normal text-gray-500">registros</span></p>
+                      <p className="flex items-center gap-2 text-xs font-bold text-gray-500 uppercase tracking-wider"><Database size={14} className="text-blue-500"/> Base de Datos</p>
+                      <p className="mt-3 text-3xl font-black text-gray-900">{heroMetrics ? heroMetrics.funcionariosCount.toLocaleString('es-AR') : '…'} <span className="text-sm font-semibold text-gray-500">registros</span></p>
                     </div>
-                    <div className="mt-4 pt-4 border-t border-gray-200/50">
-                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Mes Analizado</p>
+                    <div className="mt-5 pt-5 border-t border-gray-200/60">
+                      <p className="flex items-center gap-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider"><Calendar size={12}/> Mes Analizado</p>
                       <p className="mt-1 text-sm font-bold text-gray-700">{heroMetrics ? (heroMetrics.latestMonthLabel || 'Sin datos') : '…'}</p>
                     </div>
                   </div>
 
                   {/* Riesgo BCRA */}
-                  <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 col-span-2 md:col-span-2 rounded-2xl bg-amber-50/60 backdrop-blur-xl border border-amber-200/60 p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between" style={{ animationDelay: '200ms', animationFillMode: 'both' }}>
+                  <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 col-span-2 md:col-span-2 rounded-3xl bg-amber-50/70 backdrop-blur-xl border border-white/60 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all flex flex-col justify-between" style={{ animationDelay: '200ms', animationFillMode: 'both' }}>
                     <div>
-                      <p className="text-xs font-bold text-amber-700 uppercase tracking-wider">Situación Crediticia</p>
-                      <p className="mt-2 text-3xl font-black text-amber-900">{heroMetrics ? heroMetrics.situacionCounts.riesgo : '…'}</p>
-                      <p className="text-sm text-amber-800/80">en situación irregular o riesgo (2 al 5)</p>
+                      <p className="flex items-center gap-2 text-xs font-bold text-amber-700 uppercase tracking-wider"><AlertTriangle size={14} className="text-amber-500"/> Situación Crediticia</p>
+                      <p className="mt-3 text-4xl font-black text-amber-900">{heroMetrics ? heroMetrics.situacionCounts.riesgo : '…'}</p>
+                      <p className="text-sm font-medium text-amber-800/80 mt-1">en situación irregular o riesgo (2 al 5)</p>
                     </div>
-                    <div className="mt-4 text-xs font-semibold text-amber-700/60">
+                    <div className="mt-5 text-xs font-bold text-amber-700/60 bg-amber-100/50 p-2 rounded-xl text-center">
                       {heroMetrics ? heroMetrics.situacionCounts.normal : '…'} en situación 1 (Normal)
                     </div>
                   </div>
 
                   {/* Top 3 */}
-                  <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 col-span-2 md:col-span-2 rounded-2xl bg-red-50/60 backdrop-blur-xl border border-red-200/60 p-5 shadow-sm hover:shadow-md transition-all" style={{ animationDelay: '300ms', animationFillMode: 'both' }}>
-                    <p className="text-xs font-bold text-red-600 uppercase tracking-wider mb-3">Top 3 Deudores</p>
-                    <div className="space-y-3">
+                  <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 col-span-2 md:col-span-2 rounded-3xl bg-red-50/70 backdrop-blur-xl border border-white/60 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all" style={{ animationDelay: '300ms', animationFillMode: 'both' }}>
+                    <p className="flex items-center gap-2 text-xs font-bold text-red-600 uppercase tracking-wider mb-4"><Trophy size={14} className="text-red-500"/> Top 3 Deudores</p>
+                    <div className="space-y-4">
                       {heroMetrics?.top3.map((item, i) => (
                         <div key={item.person.cuit} className="flex items-center justify-between group cursor-pointer" onClick={() => window.location.href = withBasePath(`/personas/${item.person.slug}`)}>
-                          <div className="flex items-center gap-2 overflow-hidden">
-                            <span className="flex-none w-5 h-5 rounded-full bg-red-200 text-red-700 text-xs font-bold flex items-center justify-center">{i + 1}</span>
+                          <div className="flex items-center gap-3 overflow-hidden">
+                            <span className="flex-none w-6 h-6 rounded-full bg-red-100 text-red-700 text-xs font-black flex items-center justify-center">{i + 1}</span>
                             <p className="text-sm font-bold text-gray-900 truncate group-hover:text-red-600 transition-colors" title={item.person.nombre}>{item.person.nombre}</p>
                           </div>
-                          <p className="text-xs font-bold text-red-700 whitespace-nowrap pl-2">{formatMoneyArs(item.totalPersonDebt)}</p>
+                          <p className="text-xs font-black text-red-700 whitespace-nowrap pl-2">{formatMoneyArs(item.totalPersonDebt)}</p>
                         </div>
                       ))}
                     </div>
                   </div>
 
                   {/* Deuda Total & Poder */}
-                  <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 col-span-2 md:col-span-4 rounded-2xl bg-gradient-to-br from-violet-50 to-fuchsia-50 backdrop-blur-xl border border-violet-200/60 p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between gap-6" style={{ animationDelay: '400ms', animationFillMode: 'both' }}>
-                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                  <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 col-span-2 md:col-span-4 rounded-3xl bg-gradient-to-br from-indigo-50/80 to-purple-50/80 backdrop-blur-xl border border-white/80 p-7 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all flex flex-col justify-between gap-6" style={{ animationDelay: '400ms', animationFillMode: 'both' }}>
+                    <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
                       <div>
-                        <p className="text-xs font-bold text-violet-600 uppercase tracking-wider flex items-center gap-2">Deuda Total Acumulada <span className="px-2 py-0.5 bg-violet-200 text-violet-800 rounded-full text-[10px]">Titulares + Familiares</span></p>
-                        <p className="mt-2 text-4xl font-black text-gray-900 tracking-tight">
-                          {heroMetrics ? formatMoneyArs(heroMetrics.totalDebt) : '…'}
-                        </p>
+                        <p className="flex items-center gap-2 text-xs font-bold text-indigo-600 uppercase tracking-wider"><Wallet size={14} className="text-indigo-500"/> Deuda Total Acumulada</p>
+                        <div className="mt-3 flex items-baseline gap-3 flex-wrap">
+                          <p className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight">
+                            {heroMetrics ? formatMoneyArs(heroMetrics.totalDebt) : '…'}
+                          </p>
+                          <span className="px-2.5 py-1 bg-indigo-100 text-indigo-800 rounded-full text-[10px] font-bold tracking-wider">TITULARES + FAMILIARES</span>
+                        </div>
                       </div>
                       {heroMetrics?.latestMep && (
-                        <div className="text-left md:text-right">
-                          <p className="text-xs font-semibold text-violet-500 uppercase tracking-wider">Equivalente USD (MEP)</p>
-                          <p className="text-2xl font-bold text-violet-800">
+                        <div className="text-left md:text-right bg-white/40 p-3 rounded-2xl border border-white/50">
+                          <p className="text-[10px] font-bold text-indigo-500 uppercase tracking-wider">Equivalente USD (MEP)</p>
+                          <p className="text-xl font-black text-indigo-800 mt-1">
                             ~ US$ {new Intl.NumberFormat('es-AR').format(Math.round((heroMetrics.totalDebt * 1000) / heroMetrics.latestMep))}
                           </p>
                         </div>
@@ -347,59 +352,59 @@ export default function App({ initialPathname, initialSearch }: AppProps) {
                     </div>
                     
                     {/* Progress Bar Poder */}
-                    <div className="w-full space-y-2">
-                      <div className="flex justify-between text-xs font-semibold text-gray-500 mb-1">
+                    <div className="w-full space-y-3 mt-2">
+                      <div className="flex justify-between text-[10px] font-bold text-gray-500 uppercase tracking-wider">
                         <span>Desglose por Poder del Estado</span>
                       </div>
-                      <div className="h-6 w-full rounded-full flex overflow-hidden bg-gray-200">
-                        <div className="bg-blue-500 flex items-center justify-center text-[10px] font-bold text-white overflow-hidden whitespace-nowrap px-1" style={{ width: `${heroMetrics ? (heroMetrics.deudaPorPoder.legislativo / heroMetrics.totalDebt) * 100 : 0}%` }} title="Legislativo">
+                      <div className="h-8 w-full rounded-full flex overflow-hidden bg-gray-200/50 shadow-inner">
+                        <div className="bg-blue-500 flex items-center justify-center text-[10px] font-bold text-white overflow-hidden whitespace-nowrap px-2 transition-all" style={{ width: `${heroMetrics ? (heroMetrics.deudaPorPoder.legislativo / heroMetrics.totalDebt) * 100 : 0}%` }} title="Legislativo">
                           {heroMetrics && heroMetrics.deudaPorPoder.legislativo > 0 ? formatMoneyArs(heroMetrics.deudaPorPoder.legislativo) : ''}
                         </div>
-                        <div className="bg-emerald-500 flex items-center justify-center text-[10px] font-bold text-white overflow-hidden whitespace-nowrap px-1" style={{ width: `${heroMetrics ? (heroMetrics.deudaPorPoder.ejecutivo / heroMetrics.totalDebt) * 100 : 0}%` }} title="Ejecutivo">
+                        <div className="bg-emerald-500 flex items-center justify-center text-[10px] font-bold text-white overflow-hidden whitespace-nowrap px-2 transition-all" style={{ width: `${heroMetrics ? (heroMetrics.deudaPorPoder.ejecutivo / heroMetrics.totalDebt) * 100 : 0}%` }} title="Ejecutivo">
                           {heroMetrics && heroMetrics.deudaPorPoder.ejecutivo > 0 ? formatMoneyArs(heroMetrics.deudaPorPoder.ejecutivo) : ''}
                         </div>
-                        <div className="bg-amber-500 flex items-center justify-center text-[10px] font-bold text-white overflow-hidden whitespace-nowrap px-1" style={{ width: `${heroMetrics ? (heroMetrics.deudaPorPoder.judicial / heroMetrics.totalDebt) * 100 : 0}%` }} title="Judicial">
+                        <div className="bg-amber-500 flex items-center justify-center text-[10px] font-bold text-white overflow-hidden whitespace-nowrap px-2 transition-all" style={{ width: `${heroMetrics ? (heroMetrics.deudaPorPoder.judicial / heroMetrics.totalDebt) * 100 : 0}%` }} title="Judicial">
                           {heroMetrics && heroMetrics.deudaPorPoder.judicial > 0 ? formatMoneyArs(heroMetrics.deudaPorPoder.judicial) : ''}
                         </div>
                       </div>
-                      <div className="flex flex-wrap gap-x-4 gap-y-1 text-[10px] font-bold uppercase tracking-wider mt-2">
-                        <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-blue-500"></span>Legislativo ({heroMetrics ? Math.round((heroMetrics.deudaPorPoder.legislativo / heroMetrics.totalDebt) * 100) : 0}%)</div>
-                        <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-emerald-500"></span>Ejecutivo ({heroMetrics ? Math.round((heroMetrics.deudaPorPoder.ejecutivo / heroMetrics.totalDebt) * 100) : 0}%)</div>
-                        <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-amber-500"></span>Judicial ({heroMetrics ? Math.round((heroMetrics.deudaPorPoder.judicial / heroMetrics.totalDebt) * 100) : 0}%)</div>
+                      <div className="flex flex-wrap gap-x-5 gap-y-2 text-[10px] font-bold uppercase tracking-wider pt-1">
+                        <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-sm"></span>Legislativo ({heroMetrics ? Math.round((heroMetrics.deudaPorPoder.legislativo / heroMetrics.totalDebt) * 100) : 0}%)</div>
+                        <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm"></span>Ejecutivo ({heroMetrics ? Math.round((heroMetrics.deudaPorPoder.ejecutivo / heroMetrics.totalDebt) * 100) : 0}%)</div>
+                        <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-amber-500 shadow-sm"></span>Judicial ({heroMetrics ? Math.round((heroMetrics.deudaPorPoder.judicial / heroMetrics.totalDebt) * 100) : 0}%)</div>
                       </div>
                     </div>
                   </div>
 
                   {/* Titular vs Familiar & Promedio */}
-                  <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 col-span-2 md:col-span-2 flex flex-col gap-4" style={{ animationDelay: '500ms', animationFillMode: 'both' }}>
-                    <div className="flex-1 rounded-2xl bg-indigo-50/60 backdrop-blur-xl border border-indigo-200/60 p-5 shadow-sm hover:shadow-md transition-all">
-                       <p className="text-xs font-bold text-indigo-600 uppercase tracking-wider mb-2">Promedio por Funcionario</p>
-                       <p className="text-2xl font-black text-gray-900">{heroMetrics ? formatMoneyArs(heroMetrics.averageDebt) : '…'}</p>
+                  <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 col-span-2 md:col-span-2 flex flex-col gap-5" style={{ animationDelay: '500ms', animationFillMode: 'both' }}>
+                    <div className="flex-1 rounded-3xl bg-blue-50/70 backdrop-blur-xl border border-white/60 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all flex flex-col justify-center">
+                       <p className="flex items-center gap-2 text-xs font-bold text-blue-600 uppercase tracking-wider mb-2"><Users size={14} className="text-blue-500"/> Promedio por Funcionario</p>
+                       <p className="text-3xl font-black text-gray-900">{heroMetrics ? formatMoneyArs(heroMetrics.averageDebt) : '…'}</p>
                     </div>
-                    <div className="flex-1 rounded-2xl bg-white/60 backdrop-blur-xl border border-gray-200/60 p-5 shadow-sm hover:shadow-md transition-all">
-                      <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2 flex justify-between">
+                    <div className="flex-1 rounded-3xl bg-white/70 backdrop-blur-xl border border-white/60 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all flex flex-col justify-center">
+                      <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-3 flex justify-between">
                         <span>Titular</span> <span>Familiar</span>
                       </p>
-                      <div className="flex items-end justify-between">
-                        <p className="text-sm font-bold text-gray-800">{heroMetrics ? Math.round((heroMetrics.totalTitular / heroMetrics.totalDebt) * 100) : 0}%</p>
+                      <div className="flex items-end justify-between mb-2">
+                        <p className="text-xl font-black text-gray-800">{heroMetrics ? Math.round((heroMetrics.totalTitular / heroMetrics.totalDebt) * 100) : 0}%</p>
                         <p className="text-sm font-bold text-gray-500">{heroMetrics ? Math.round((heroMetrics.totalFamiliar / heroMetrics.totalDebt) * 100) : 0}%</p>
                       </div>
-                      <div className="h-2 w-full rounded-full flex overflow-hidden bg-gray-200 mt-1">
-                        <div className="bg-gray-800" style={{ width: `${heroMetrics ? (heroMetrics.totalTitular / heroMetrics.totalDebt) * 100 : 0}%` }}></div>
-                        <div className="bg-gray-400" style={{ width: `${heroMetrics ? (heroMetrics.totalFamiliar / heroMetrics.totalDebt) * 100 : 0}%` }}></div>
+                      <div className="h-2.5 w-full rounded-full flex overflow-hidden bg-gray-100 shadow-inner">
+                        <div className="bg-gray-800 rounded-l-full" style={{ width: `${heroMetrics ? (heroMetrics.totalTitular / heroMetrics.totalDebt) * 100 : 0}%` }}></div>
+                        <div className="bg-gray-400 rounded-r-full" style={{ width: `${heroMetrics ? (heroMetrics.totalFamiliar / heroMetrics.totalDebt) * 100 : 0}%` }}></div>
                       </div>
                     </div>
                   </div>
 
                   {/* Provincias */}
                   {heroMetrics && heroMetrics.deudaPorProvincia.length > 0 && (
-                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 col-span-2 md:col-span-6 rounded-2xl bg-white/60 backdrop-blur-xl border border-gray-200/60 p-5 shadow-sm hover:shadow-md transition-all" style={{ animationDelay: '600ms', animationFillMode: 'both' }}>
-                      <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">Deuda Distrital (Provincias con deuda registrada)</p>
-                      <div className="flex gap-3 overflow-x-auto pb-2 snap-x">
+                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 col-span-2 md:col-span-6 rounded-3xl bg-white/70 backdrop-blur-xl border border-white/60 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all" style={{ animationDelay: '600ms', animationFillMode: 'both' }}>
+                      <p className="flex items-center gap-2 text-xs font-bold text-gray-500 uppercase tracking-wider mb-5"><MapPin size={14} className="text-gray-400"/> Deuda Distrital (Provincias con deuda registrada)</p>
+                      <div className="flex gap-4 overflow-x-auto pb-4 snap-x -mx-2 px-2">
                         {heroMetrics.deudaPorProvincia.map((prov) => (
-                          <div key={prov.nombre} onClick={() => setSelectedProvincia(prov.nombre)} className="flex-none w-48 bg-gray-50/80 border border-gray-100 rounded-xl p-3 snap-start hover:border-blue-300 hover:bg-blue-50 transition-colors cursor-pointer group">
+                          <div key={prov.nombre} onClick={() => setSelectedProvincia(prov.nombre)} className="flex-none w-52 bg-white border border-gray-100 shadow-sm rounded-2xl p-4 snap-start hover:border-blue-300 hover:bg-blue-50/50 hover:shadow-md transition-all cursor-pointer group">
                             <p className="text-sm font-bold text-gray-800 truncate group-hover:text-blue-800 transition-colors" title={prov.nombre}>{prov.nombre}</p>
-                            <p className="mt-1 text-lg font-black text-blue-600">{formatMoneyArs(prov.monto)}</p>
+                            <p className="mt-2 text-xl font-black text-blue-600">{formatMoneyArs(prov.monto)}</p>
                           </div>
                         ))}
                       </div>
@@ -407,7 +412,7 @@ export default function App({ initialPathname, initialSearch }: AppProps) {
                   )}
                 </div>
 
-                <div className="pt-8 flex items-center gap-4">
+                <div className="pt-8 flex flex-col md:flex-row items-center justify-center gap-6 w-full">
                   <button
                     onClick={() => setActiveTab('explorador')}
                     className="group relative inline-flex items-center justify-center gap-3 overflow-hidden rounded-full bg-gray-900 px-8 py-4 font-bold text-white transition-all duration-300 hover:scale-105 hover:bg-black focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
