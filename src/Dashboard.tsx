@@ -44,7 +44,9 @@ export default function Dashboard({ dbData, politicosData, judicialData }: Dashb
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [copied, setCopied] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
-  const [showDisclaimer, setShowDisclaimer] = useState(true);
+  const [showDisclaimer, setShowDisclaimer] = useState(() => {
+    return typeof window !== 'undefined' ? localStorage.getItem('hideDisclaimer') !== 'true' : true;
+  });
   const debtChartRef = useRef<{ getChartElement: () => HTMLDivElement | null; openExportMenu: () => void }>(null);
 
   useEffect(() => {
@@ -141,7 +143,7 @@ export default function Dashboard({ dbData, politicosData, judicialData }: Dashb
   };
 
   return (
-    <div className="flex flex-col md:flex-row h-screen bg-gray-100 font-sans overflow-hidden relative">
+    <div className="flex flex-col md:flex-row h-full bg-gray-100 font-sans overflow-hidden relative">
       <div className="md:hidden absolute top-0 left-0 right-0 z-40 bg-white/95 backdrop-blur border-b border-gray-200 px-3 py-2">
           <div className="flex items-center justify-between gap-2">
             <button
@@ -240,12 +242,25 @@ export default function Dashboard({ dbData, politicosData, judicialData }: Dashb
             <p className="text-sm text-gray-700 mb-5">
               Los datos pueden tener errores o estar desactualizados, y su interpretación requiere contexto. Se recomienda no sacar conclusiones apresuradas y chequear con otras fuentes.
             </p>
-            <button
-              onClick={() => setShowDisclaimer(false)}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition-colors"
-            >
-              Entendido
-            </button>
+            <div className="flex flex-col gap-2">
+              <button
+                onClick={() => setShowDisclaimer(false)}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition-colors"
+              >
+                Entendido
+              </button>
+              <button
+                onClick={() => {
+                  if (typeof window !== 'undefined') {
+                    localStorage.setItem('hideDisclaimer', 'true');
+                  }
+                  setShowDisclaimer(false);
+                }}
+                className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2 rounded-lg transition-colors text-sm"
+              >
+                No volver a mostrar
+              </button>
+            </div>
           </div>
         </div>
       )}
