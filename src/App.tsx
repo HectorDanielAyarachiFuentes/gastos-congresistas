@@ -1,4 +1,5 @@
 import { useMemo, useState, useEffect } from 'react';
+import { X } from 'lucide-react';
 import Dashboard from './Dashboard';
 import PeopleDirectoryPage from './PeopleDirectoryPage';
 import PersonPage from './PersonPage';
@@ -53,6 +54,7 @@ export default function App({ initialPathname, initialSearch }: AppProps) {
     }
     return 'resumen';
   });
+  const [selectedProvincia, setSelectedProvincia] = useState<string | null>(null);
 
   useEffect(() => {
     if (personSlug && embeddedPerson) return;
@@ -170,6 +172,7 @@ export default function App({ initialPathname, initialSearch }: AppProps) {
       deudaPorProvincia: provinciasList,
       situacionCounts,
       top3,
+      fullRanking: ranking,
       averageDebt,
       latestMep: dbData.meta.mep[latestMonth] || null,
     };
@@ -348,10 +351,16 @@ export default function App({ initialPathname, initialSearch }: AppProps) {
                       <div className="flex justify-between text-xs font-semibold text-gray-500 mb-1">
                         <span>Desglose por Poder del Estado</span>
                       </div>
-                      <div className="h-3 w-full rounded-full flex overflow-hidden bg-gray-200">
-                        <div className="bg-blue-500" style={{ width: `${heroMetrics ? (heroMetrics.deudaPorPoder.legislativo / heroMetrics.totalDebt) * 100 : 0}%` }} title="Legislativo"></div>
-                        <div className="bg-emerald-500" style={{ width: `${heroMetrics ? (heroMetrics.deudaPorPoder.ejecutivo / heroMetrics.totalDebt) * 100 : 0}%` }} title="Ejecutivo"></div>
-                        <div className="bg-amber-500" style={{ width: `${heroMetrics ? (heroMetrics.deudaPorPoder.judicial / heroMetrics.totalDebt) * 100 : 0}%` }} title="Judicial"></div>
+                      <div className="h-6 w-full rounded-full flex overflow-hidden bg-gray-200">
+                        <div className="bg-blue-500 flex items-center justify-center text-[10px] font-bold text-white overflow-hidden whitespace-nowrap px-1" style={{ width: `${heroMetrics ? (heroMetrics.deudaPorPoder.legislativo / heroMetrics.totalDebt) * 100 : 0}%` }} title="Legislativo">
+                          {heroMetrics && heroMetrics.deudaPorPoder.legislativo > 0 ? formatMoneyArs(heroMetrics.deudaPorPoder.legislativo) : ''}
+                        </div>
+                        <div className="bg-emerald-500 flex items-center justify-center text-[10px] font-bold text-white overflow-hidden whitespace-nowrap px-1" style={{ width: `${heroMetrics ? (heroMetrics.deudaPorPoder.ejecutivo / heroMetrics.totalDebt) * 100 : 0}%` }} title="Ejecutivo">
+                          {heroMetrics && heroMetrics.deudaPorPoder.ejecutivo > 0 ? formatMoneyArs(heroMetrics.deudaPorPoder.ejecutivo) : ''}
+                        </div>
+                        <div className="bg-amber-500 flex items-center justify-center text-[10px] font-bold text-white overflow-hidden whitespace-nowrap px-1" style={{ width: `${heroMetrics ? (heroMetrics.deudaPorPoder.judicial / heroMetrics.totalDebt) * 100 : 0}%` }} title="Judicial">
+                          {heroMetrics && heroMetrics.deudaPorPoder.judicial > 0 ? formatMoneyArs(heroMetrics.deudaPorPoder.judicial) : ''}
+                        </div>
                       </div>
                       <div className="flex flex-wrap gap-x-4 gap-y-1 text-[10px] font-bold uppercase tracking-wider mt-2">
                         <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-blue-500"></span>Legislativo ({heroMetrics ? Math.round((heroMetrics.deudaPorPoder.legislativo / heroMetrics.totalDebt) * 100) : 0}%)</div>
@@ -388,8 +397,8 @@ export default function App({ initialPathname, initialSearch }: AppProps) {
                       <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">Deuda Distrital (Provincias con deuda registrada)</p>
                       <div className="flex gap-3 overflow-x-auto pb-2 snap-x">
                         {heroMetrics.deudaPorProvincia.map((prov) => (
-                          <div key={prov.nombre} className="flex-none w-48 bg-gray-50/80 border border-gray-100 rounded-xl p-3 snap-start hover:border-blue-200 transition-colors cursor-default">
-                            <p className="text-sm font-bold text-gray-800 truncate" title={prov.nombre}>{prov.nombre}</p>
+                          <div key={prov.nombre} onClick={() => setSelectedProvincia(prov.nombre)} className="flex-none w-48 bg-gray-50/80 border border-gray-100 rounded-xl p-3 snap-start hover:border-blue-300 hover:bg-blue-50 transition-colors cursor-pointer group">
+                            <p className="text-sm font-bold text-gray-800 truncate group-hover:text-blue-800 transition-colors" title={prov.nombre}>{prov.nombre}</p>
                             <p className="mt-1 text-lg font-black text-blue-600">{formatMoneyArs(prov.monto)}</p>
                           </div>
                         ))}
@@ -482,6 +491,36 @@ export default function App({ initialPathname, initialSearch }: AppProps) {
                     </a>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        )}
+        
+        {/* Modal Provincia */}
+        {selectedProvincia && heroMetrics && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in" onClick={() => setSelectedProvincia(null)}>
+            <div className="bg-white p-6 rounded-2xl shadow-xl max-w-md w-full max-h-[80vh] flex flex-col" onClick={e => e.stopPropagation()}>
+              <div className="flex justify-between items-center mb-4">
+                <div>
+                  <h3 className="font-black text-xl text-gray-900">{selectedProvincia}</h3>
+                  <p className="text-xs font-semibold text-gray-500 uppercase mt-1">Funcionarios con Deuda</p>
+                </div>
+                <button onClick={() => setSelectedProvincia(null)} className="text-gray-400 hover:text-gray-600 bg-gray-100 hover:bg-gray-200 p-2 rounded-full transition-colors">
+                  <X size={16} />
+                </button>
+              </div>
+              <div className="overflow-y-auto flex-1 space-y-2 pr-2">
+                {heroMetrics.fullRanking
+                  .filter(item => item.person.distrito === selectedProvincia)
+                  .map((item, i) => (
+                    <div key={item.person.cuit} className="flex justify-between items-center p-3 bg-gray-50 rounded-xl border border-gray-100 cursor-pointer hover:border-blue-300 hover:bg-blue-50 transition-colors group" onClick={() => window.location.href = withBasePath(`/personas/${item.person.slug}`)}>
+                      <div className="min-w-0 pr-3">
+                        <p className="font-bold text-gray-900 text-sm truncate group-hover:text-blue-800 transition-colors">{item.person.nombre}</p>
+                        <p className="text-[10px] text-gray-500 uppercase truncate" title={item.person.cargo}>{item.person.cargo}</p>
+                      </div>
+                      <p className="font-black text-blue-600 shrink-0">{formatMoneyArs(item.totalPersonDebt)}</p>
+                    </div>
+                ))}
               </div>
             </div>
           </div>
