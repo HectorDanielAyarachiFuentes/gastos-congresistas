@@ -655,6 +655,37 @@ const DebtChart = forwardRef(({
     }
   };
 
+  const handleExportCsv = () => {
+    setShowExportMenu(false);
+    posthog?.capture('chart_exported', { method: 'csv', currency_mode: currencyMode, funcionarios_count: legislators.length });
+    const rows = [['Fecha', 'Funcionario', 'Familiar', 'Entidad', 'Monto_Miles_ARS_Original', 'Monto_Convertido', 'Moneda_Visualizada']];
+    
+    visibleLegislators.forEach(l => {
+      l.historial.forEach(r => {
+         const monto = convertMonto(r.monto, r.fecha);
+         rows.push([r.fecha, `"${l.nombre}"`, 'Titular', `"${r.entidad}"`, r.monto.toString(), monto.toFixed(2), currencyMode]);
+      });
+      if (includeFamiliares && l.familiares) {
+        l.familiares.forEach(fam => {
+           fam.historial.forEach(r => {
+             const monto = convertMonto(r.monto, r.fecha);
+             rows.push([r.fecha, `"${l.nombre}"`, `"${fam.parentesco}"`, `"${r.entidad}"`, r.monto.toString(), monto.toFixed(2), currencyMode]);
+           });
+        });
+      }
+    });
+
+    const csvContent = "data:text/csv;charset=utf-8," + rows.map(e => e.join(",")).join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    const names = visibleLegislators.map(l => l.nombre).join('-').replace(/\s+/g, '_').slice(0, 40);
+    link.setAttribute("download", `datos-deuda-${names}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   useEffect(() => {
     if (!milestoneHint) return;
 
@@ -958,6 +989,9 @@ const DebtChart = forwardRef(({
                 <div className="fixed top-14 right-2 md:absolute md:top-10 md:right-0 bg-white border border-gray-200 shadow-lg rounded-lg z-50 py-1 min-w-44" data-export-menu>
                   <button onClick={handleExportDownload} className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2">
                     <Download size={14} /> Descargar imagen
+                  </button>
+                  <button onClick={handleExportCsv} className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2 border-b border-gray-100">
+                    <Download size={14} /> Descargar datos (CSV)
                   </button>
                   <button onClick={handleExportCopy} className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2">
                     <Copy size={14} /> Copiar imagen

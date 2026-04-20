@@ -59,6 +59,7 @@ export default function LegislatorSelector({
   const [levelChangeFilter, setLevelChangeFilter] = useState("todos");
   const [familiaresFilter, setFamiliaresFilter] = useState("todos");
   const [situacionFilter, setSituacionFilter] = useState("todos");
+  const [hasDebtFilter, setHasDebtFilter] = useState("todos");
   const [sortOrder, setSortOrder] = useState("nombre_asc");
 
   const provinces = useMemo(() => [...new Set(legisladores.filter(l => l.distrito !== undefined).map(l => l.distrito).filter(p => (p || '').trim() !== ''))].sort(), [legisladores]);
@@ -114,8 +115,11 @@ export default function LegislatorSelector({
         const hasFamiliares = l.familiares && l.familiares.length > 0;
         const familiaresMatch = familiaresFilter === 'todos' || (familiaresFilter === 'si' ? hasFamiliares : !hasFamiliares);
         const situacionMatch = situacionFilter === 'todos' || String(l.situacion_bcra ?? 1) === situacionFilter;
+        const debtStatsData = debtStats.get(l.cuit);
+        const hasDebt = (debtStatsData && debtStatsData.max > 0) || false;
+        const hasDebtMatch = hasDebtFilter === 'todos' || (hasDebtFilter === 'si' ? hasDebt : !hasDebt);
 
-        return selectedIds.includes(l.cuit) || (searchMatch && positionMatch && provinceMatch && partyMatch && unitMatch && cargoApnMatch && cargoJudicialMatch && camaraMatch && creditMatch && levelChangeMatch && familiaresMatch && situacionMatch);
+        return selectedIds.includes(l.cuit) || (searchMatch && positionMatch && provinceMatch && partyMatch && unitMatch && cargoApnMatch && cargoJudicialMatch && camaraMatch && creditMatch && levelChangeMatch && familiaresMatch && situacionMatch && hasDebtMatch);
       })
       .sort((a, b) => {
         const aSelected = selectedIds.includes(a.cuit);
@@ -301,6 +305,18 @@ export default function LegislatorSelector({
               </select>
             </div>
           </div>
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <label htmlFor="hasDebt" className="block text-gray-600 text-xs font-semibold mb-1 flex gap-1">
+                Deuda Registrada
+              </label>
+              <select id="hasDebt" value={hasDebtFilter} onChange={e => { posthog?.capture('filter_applied', { filter: 'has_debt', value: e.target.value }); setHasDebtFilter(e.target.value); }} className="w-full p-2 border rounded bg-white">
+                <option value="todos">Todos</option>
+                <option value="si">Solo con deuda (&gt; $0)</option>
+                <option value="no">Sin deuda ($0)</option>
+              </select>
+            </div>
+          </div>
           <p className="text-[10px] text-gray-500 leading-tight space-y-0.5">
             {garantiaFecha && <span className="block">† Preferido (hipoteca, prenda, etc.) al {garantiaFecha} según BCRA.</span>}
             <span className="block">* Cambio de nivel: heurística inferida a partir de los montos.</span>
@@ -319,6 +335,7 @@ export default function LegislatorSelector({
               setLevelChangeFilter("todos");
               setFamiliaresFilter("todos");
               setSituacionFilter("todos");
+              setHasDebtFilter("todos");
             }}
             className="w-full py-2 bg-gray-100 hover:bg-gray-200 text-gray-600 text-xs font-semibold rounded transition-colors"
           >

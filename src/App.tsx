@@ -110,6 +110,7 @@ export default function App({ initialPathname, initialSearch }: AppProps) {
     let totalFamiliar = 0;
     
     const deudaPorPoder = { legislativo: 0, ejecutivo: 0, judicial: 0 };
+    const deudaPorProvincia: Record<string, number> = {};
     const situacionCounts = { normal: 0, riesgo: 0, sin_datos: 0 };
     const ranking: { person: LegislatorWithSlug, totalPersonDebt: number }[] = [];
 
@@ -141,6 +142,10 @@ export default function App({ initialPathname, initialSearch }: AppProps) {
       else if (l.poder === 'ejecutivo') deudaPorPoder.ejecutivo += totalPersonDebt;
       else if (l.poder === 'judicial') deudaPorPoder.judicial += totalPersonDebt;
 
+      if (l.distrito && l.distrito.trim() !== '' && totalPersonDebt > 0) {
+        deudaPorProvincia[l.distrito] = (deudaPorProvincia[l.distrito] || 0) + totalPersonDebt;
+      }
+
       const sit = l.situacion_bcra || 0;
       if (sit === 1) situacionCounts.normal++;
       else if (sit >= 2 && sit <= 6) situacionCounts.riesgo++;
@@ -151,6 +156,10 @@ export default function App({ initialPathname, initialSearch }: AppProps) {
     const top3 = ranking.slice(0, 3);
     const averageDebt = combined.length > 0 ? totalDebt / combined.length : 0;
 
+    const provinciasList = Object.entries(deudaPorProvincia)
+      .sort((a, b) => b[1] - a[1])
+      .map(([nombre, monto]) => ({ nombre, monto }));
+
     return {
       funcionariosCount: combined.length,
       latestMonthLabel: formatMonthLabel(latestMonth),
@@ -158,6 +167,7 @@ export default function App({ initialPathname, initialSearch }: AppProps) {
       totalTitular,
       totalFamiliar,
       deudaPorPoder,
+      deudaPorProvincia: provinciasList,
       situacionCounts,
       top3,
       averageDebt,
@@ -275,7 +285,7 @@ export default function App({ initialPathname, initialSearch }: AppProps) {
                 <div className="grid grid-cols-2 md:grid-cols-6 gap-4 pt-4">
                   
                   {/* Basic Stats */}
-                  <div className="col-span-2 md:col-span-2 rounded-2xl bg-white/60 backdrop-blur-xl border border-gray-200/60 p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+                  <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 col-span-2 md:col-span-2 rounded-2xl bg-white/60 backdrop-blur-xl border border-gray-200/60 p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between" style={{ animationDelay: '100ms', animationFillMode: 'both' }}>
                     <div>
                       <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">Base de Datos</p>
                       <p className="mt-2 text-2xl font-black text-gray-900">{heroMetrics ? heroMetrics.funcionariosCount.toLocaleString('es-AR') : '…'} <span className="text-sm font-normal text-gray-500">registros</span></p>
@@ -287,7 +297,7 @@ export default function App({ initialPathname, initialSearch }: AppProps) {
                   </div>
 
                   {/* Riesgo BCRA */}
-                  <div className="col-span-2 md:col-span-2 rounded-2xl bg-amber-50/60 backdrop-blur-xl border border-amber-200/60 p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+                  <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 col-span-2 md:col-span-2 rounded-2xl bg-amber-50/60 backdrop-blur-xl border border-amber-200/60 p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between" style={{ animationDelay: '200ms', animationFillMode: 'both' }}>
                     <div>
                       <p className="text-xs font-bold text-amber-700 uppercase tracking-wider">Situación Crediticia</p>
                       <p className="mt-2 text-3xl font-black text-amber-900">{heroMetrics ? heroMetrics.situacionCounts.riesgo : '…'}</p>
@@ -299,7 +309,7 @@ export default function App({ initialPathname, initialSearch }: AppProps) {
                   </div>
 
                   {/* Top 3 */}
-                  <div className="col-span-2 md:col-span-2 rounded-2xl bg-red-50/60 backdrop-blur-xl border border-red-200/60 p-5 shadow-sm hover:shadow-md transition-all">
+                  <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 col-span-2 md:col-span-2 rounded-2xl bg-red-50/60 backdrop-blur-xl border border-red-200/60 p-5 shadow-sm hover:shadow-md transition-all" style={{ animationDelay: '300ms', animationFillMode: 'both' }}>
                     <p className="text-xs font-bold text-red-600 uppercase tracking-wider mb-3">Top 3 Deudores</p>
                     <div className="space-y-3">
                       {heroMetrics?.top3.map((item, i) => (
@@ -315,7 +325,7 @@ export default function App({ initialPathname, initialSearch }: AppProps) {
                   </div>
 
                   {/* Deuda Total & Poder */}
-                  <div className="col-span-2 md:col-span-4 rounded-2xl bg-gradient-to-br from-violet-50 to-fuchsia-50 backdrop-blur-xl border border-violet-200/60 p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between gap-6">
+                  <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 col-span-2 md:col-span-4 rounded-2xl bg-gradient-to-br from-violet-50 to-fuchsia-50 backdrop-blur-xl border border-violet-200/60 p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between gap-6" style={{ animationDelay: '400ms', animationFillMode: 'both' }}>
                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
                       <div>
                         <p className="text-xs font-bold text-violet-600 uppercase tracking-wider flex items-center gap-2">Deuda Total Acumulada <span className="px-2 py-0.5 bg-violet-200 text-violet-800 rounded-full text-[10px]">Titulares + Familiares</span></p>
@@ -352,7 +362,7 @@ export default function App({ initialPathname, initialSearch }: AppProps) {
                   </div>
 
                   {/* Titular vs Familiar & Promedio */}
-                  <div className="col-span-2 md:col-span-2 flex flex-col gap-4">
+                  <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 col-span-2 md:col-span-2 flex flex-col gap-4" style={{ animationDelay: '500ms', animationFillMode: 'both' }}>
                     <div className="flex-1 rounded-2xl bg-indigo-50/60 backdrop-blur-xl border border-indigo-200/60 p-5 shadow-sm hover:shadow-md transition-all">
                        <p className="text-xs font-bold text-indigo-600 uppercase tracking-wider mb-2">Promedio por Funcionario</p>
                        <p className="text-2xl font-black text-gray-900">{heroMetrics ? formatMoneyArs(heroMetrics.averageDebt) : '…'}</p>
@@ -371,6 +381,21 @@ export default function App({ initialPathname, initialSearch }: AppProps) {
                       </div>
                     </div>
                   </div>
+
+                  {/* Provincias */}
+                  {heroMetrics && heroMetrics.deudaPorProvincia.length > 0 && (
+                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 col-span-2 md:col-span-6 rounded-2xl bg-white/60 backdrop-blur-xl border border-gray-200/60 p-5 shadow-sm hover:shadow-md transition-all" style={{ animationDelay: '600ms', animationFillMode: 'both' }}>
+                      <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">Deuda Distrital (Provincias con deuda registrada)</p>
+                      <div className="flex gap-3 overflow-x-auto pb-2 snap-x">
+                        {heroMetrics.deudaPorProvincia.map((prov) => (
+                          <div key={prov.nombre} className="flex-none w-48 bg-gray-50/80 border border-gray-100 rounded-xl p-3 snap-start hover:border-blue-200 transition-colors cursor-default">
+                            <p className="text-sm font-bold text-gray-800 truncate" title={prov.nombre}>{prov.nombre}</p>
+                            <p className="mt-1 text-lg font-black text-blue-600">{formatMoneyArs(prov.monto)}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <div className="pt-8 flex items-center gap-4">
