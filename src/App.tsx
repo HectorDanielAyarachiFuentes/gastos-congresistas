@@ -45,6 +45,7 @@ export default function App({ initialPathname, initialSearch }: AppProps) {
   const [person, setPerson] = useState<LegislatorWithSlug | null>(embeddedPerson);
   const [personNotFound, setPersonNotFound] = useState(false);
   
+  const [showRiesgoModal, setShowRiesgoModal] = useState(false);
   const [activeTab, setActiveTab] = useState<'resumen' | 'explorador' | 'acerca'>(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
@@ -115,6 +116,7 @@ export default function App({ initialPathname, initialSearch }: AppProps) {
     const deudaPorProvincia: Record<string, number> = {};
     const situacionCounts = { normal: 0, riesgo: 0, sin_datos: 0 };
     const ranking: { person: LegislatorWithSlug, totalPersonDebt: number }[] = [];
+    const personasEnRiesgo: { person: LegislatorWithSlug, totalPersonDebt: number, situacion: number }[] = [];
 
     combined.forEach((l) => {
       let personTitularDebt = 0;
@@ -150,11 +152,15 @@ export default function App({ initialPathname, initialSearch }: AppProps) {
 
       const sit = l.situacion_bcra || 0;
       if (sit === 1) situacionCounts.normal++;
-      else if (sit >= 2 && sit <= 6) situacionCounts.riesgo++;
+      else if (sit >= 2 && sit <= 6) {
+        situacionCounts.riesgo++;
+        personasEnRiesgo.push({ person: l, totalPersonDebt, situacion: sit });
+      }
       else situacionCounts.sin_datos++;
     });
 
     ranking.sort((a, b) => b.totalPersonDebt - a.totalPersonDebt);
+    personasEnRiesgo.sort((a, b) => b.situacion - a.situacion || b.totalPersonDebt - a.totalPersonDebt);
     const top3 = ranking.slice(0, 3);
     const averageDebt = combined.length > 0 ? totalDebt / combined.length : 0;
 
@@ -171,6 +177,7 @@ export default function App({ initialPathname, initialSearch }: AppProps) {
       deudaPorPoder,
       deudaPorProvincia: provinciasList,
       situacionCounts,
+      personasEnRiesgo,
       top3,
       fullRanking: ranking,
       averageDebt,
@@ -302,14 +309,28 @@ export default function App({ initialPathname, initialSearch }: AppProps) {
                   </div>
 
                   {/* Riesgo BCRA */}
-                  <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 col-span-2 md:col-span-2 rounded-3xl bg-amber-50/70 backdrop-blur-xl border border-white/60 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all flex flex-col justify-between" style={{ animationDelay: '200ms', animationFillMode: 'both' }}>
+                  <div 
+                    onClick={() => setShowRiesgoModal(true)}
+                    className="cursor-pointer group animate-in fade-in slide-in-from-bottom-4 duration-700 col-span-2 md:col-span-2 rounded-3xl bg-amber-50/70 backdrop-blur-xl border border-amber-100/60 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:bg-amber-100/50 hover:-translate-y-1 transition-all flex flex-col justify-between" 
+                    style={{ animationDelay: '200ms', animationFillMode: 'both' }}
+                  >
                     <div>
                       <p className="flex items-center gap-2 text-xs font-bold text-amber-700 uppercase tracking-wider"><AlertTriangle size={14} className="text-amber-500"/> Situación Crediticia</p>
-                      <p className="mt-3 text-4xl font-black text-amber-900">{heroMetrics ? heroMetrics.situacionCounts.riesgo : '…'}</p>
+                      <div className="mt-3 flex items-baseline gap-2">
+                        <p className="text-4xl font-black text-amber-900">{heroMetrics ? heroMetrics.situacionCounts.riesgo : '…'}</p>
+                        <span className="text-[10px] font-bold text-amber-700 bg-amber-200/60 px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">Ver lista</span>
+                      </div>
                       <p className="text-sm font-medium text-amber-800/80 mt-1">en situación irregular o riesgo (2 al 5)</p>
                     </div>
-                    <div className="mt-5 text-xs font-bold text-amber-700/60 bg-amber-100/50 p-2 rounded-xl text-center">
-                      {heroMetrics ? heroMetrics.situacionCounts.normal : '…'} en situación 1 (Normal)
+                    <div className="mt-5 flex flex-col gap-1.5">
+                      <div className="text-[10px] font-bold text-emerald-700/80 bg-emerald-100/50 p-2 rounded-xl text-center flex justify-between px-3">
+                        <span>{heroMetrics ? heroMetrics.situacionCounts.normal : '…'} en situación 1</span>
+                        <span className="uppercase text-emerald-600">Normal</span>
+                      </div>
+                      <div className="text-[10px] font-bold text-gray-500/80 bg-gray-100/50 p-2 rounded-xl text-center flex justify-between px-3 border border-gray-200/30">
+                        <span>{heroMetrics ? heroMetrics.situacionCounts.sin_datos : '…'} sin calificación</span>
+                        <span className="uppercase text-gray-400">Sin Datos</span>
+                      </div>
                     </div>
                   </div>
 
@@ -501,6 +522,42 @@ export default function App({ initialPathname, initialSearch }: AppProps) {
           </div>
         )}
         
+        {/* Modal Riesgo */}
+        {showRiesgoModal && heroMetrics && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in" onClick={() => setShowRiesgoModal(false)}>
+            <div className="bg-white p-6 rounded-2xl shadow-xl max-w-md w-full max-h-[80vh] flex flex-col" onClick={e => e.stopPropagation()}>
+              <div className="flex justify-between items-center mb-4">
+                <div>
+                  <h3 className="font-black text-xl text-amber-900 flex items-center gap-2">
+                    <AlertTriangle size={20} className="text-amber-500"/> 
+                    Situación Irregular
+                  </h3>
+                  <p className="text-xs font-semibold text-gray-500 uppercase mt-1">Funcionarios en situación 2 a 5</p>
+                </div>
+                <button onClick={() => setShowRiesgoModal(false)} className="text-gray-400 hover:text-gray-600 bg-gray-100 hover:bg-gray-200 p-2 rounded-full transition-colors">
+                  <X size={16} />
+                </button>
+              </div>
+              <div className="overflow-y-auto flex-1 space-y-2 pr-2">
+                {heroMetrics.personasEnRiesgo.map((item) => (
+                  <div key={item.person.cuit} className="flex justify-between items-center p-3 bg-amber-50/30 rounded-xl border border-amber-100 cursor-pointer hover:border-amber-300 hover:bg-amber-50 transition-colors group" onClick={() => window.location.href = withBasePath(`/personas/${item.person.slug}`)}>
+                    <div className="min-w-0 pr-3">
+                      <p className="font-bold text-gray-900 text-sm truncate group-hover:text-amber-800 transition-colors">{item.person.nombre}</p>
+                      <p className="text-[10px] text-gray-500 uppercase truncate" title={item.person.cargo}>{item.person.cargo}</p>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <p className="font-black text-amber-700 text-sm">Sit. {item.situacion}</p>
+                      {item.totalPersonDebt > 0 && (
+                        <p className="text-[10px] font-bold text-gray-500">{formatMoneyArs(item.totalPersonDebt)}</p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Modal Provincia */}
         {selectedProvincia && heroMetrics && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in" onClick={() => setSelectedProvincia(null)}>
